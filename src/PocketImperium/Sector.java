@@ -21,6 +21,20 @@ public class Sector {
 		return this.section;
 	}
 	
+	// Display all the available sections, or hexes that are free in this sector
+	public void availableSection() {
+		for(int i = 0; i < section.size(); i++) {
+			if(this.section.get(i).fleetAvailablity() > 0) {
+				System.out.println(i + " section has space for this " + this.section.get(i).fleetAvailablity());
+			}
+		}
+	}
+	
+	// Expand on the sector that you possess
+	public void expand(int systemID, int fleet) {
+		this.section.get(systemID).setFleet(fleet);
+	}
+	
 	// Check if the sector has an owner
 	public boolean hasOwner() {
 		if(this.owner == null) {
@@ -30,6 +44,19 @@ public class Sector {
 		return true;
 	}
 	
+	public void displayFreeSector() {
+		if(!hasOwner()) {
+			System.out.println(this.getSectorId() + " sector is free");
+		}
+	}
+	
+	public int getFreeSectorID() {
+		if(!hasOwner()) {
+			return this.sectorID;
+		}
+		return -1; // We will treat -1 as our false value
+	}
+	
 	public int sectorPoints() {
 		int points = 0;
 		Iterator<Hex> iterator = section.iterator();
@@ -37,6 +64,10 @@ public class Sector {
 			points = iterator.next().getFleet();
 		}
 		return points;
+	}
+	
+	public void setOwner(Player player) {
+		this.owner = player;
 	}
 	
 	

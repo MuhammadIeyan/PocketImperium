@@ -6,7 +6,7 @@ public class Game {
 	private List<Player> playerList;
 	private int turnNumber;
 	private boolean isFinished;
-	private String[] color = {"Red", "Green", "Yellow", "Blue"};
+	private String[] color = {"Red", "Green", "Blue"};
 	private Sector[][] map; // Makes the 9 Sector that will be used for the game
 	
 	public Game() {
@@ -18,10 +18,10 @@ public class Game {
 		
 		// Ask how many players will play in the game
 		int numberPlayer = -1;
-		System.out.println("How many players are in the game? (4 Player Maximum)");
+		System.out.println("How many players are in the game? (3 Player Maximum)");
 		Scanner scan = new Scanner(System.in); // Use a single Scanner instance
 	    
-	    while (numberPlayer < 1 || numberPlayer > 4) {
+	    while (numberPlayer < 1 || numberPlayer > 3) {
 	        System.out.print("Enter a valid number of players: ");
 	        if (scan.hasNextInt()) {
 	            numberPlayer = scan.nextInt();
@@ -38,15 +38,19 @@ public class Game {
 		for(int i = 0; i < numberPlayer; i++) {
 			System.out.println("What is the name of the player?");
 			name = scan.nextLine();
-			Player player = new Player(name, color[i]);
+			Player player = new Player(name, color[i], 15);
 			playerList.add(player);
 		}
+		
+		// Setup the game
+		turnNumber = 0;
+		buildMap();
+		displayMap();
+		setupGame();
 		
 		// Start the 1rst turn
 		isFinished = false;
 		turnNumber = 1;
-		buildMap();
-		displayMap();
 		while (turnNumber < 10 && isFinished == false) {
 			turnNumber++;
 			startTurn();
@@ -54,9 +58,88 @@ public class Game {
 		
 	}
 	
+	public void setupGame() {
+		Player currentPlayer;
+		Set<Integer> freeSectorID = availableSectors(); // Will keep track of all the free Sectors
+		
+		// Loop through the players in clockwise direction
+		for(int i = 0; i < playerList.size(); i++) {
+			currentPlayer = playerList.get(i);
+			
+			// Display all the free Sectors
+			for (int row = 0; row < 3; row++) {
+				for (int col = 0; col < 3; col++) {
+					map[row][col].displayFreeSector();
+				}
+			}
+			
+			// Ask the current player to place the initial 2 ships to start the game
+			int sectorID = -1;
+			while(!freeSectorID.contains(sectorID)) {
+				System.out.println(currentPlayer.getName() + " you have 15 ships, please place 2 ships "
+						+ "on an unoccupied level 1 system in an unoccupied Sector");
+				System.out.println("Please select the sector you want");
+				Scanner scan = new Scanner(System.in);
+				sectorID = scan.nextInt();
+			}
+			
+			// Check which sector it corresponds to the map and set the player as the owner
+			int row = (sectorID-1)/3; // will get a number from 0 to 2
+			int col = (sectorID-1)%3; // will get a number from 0 to 2
+			map[row][col].setOwner(currentPlayer); // Sets the player as the owner of the sector
+			freeSectorID.remove(sectorID); // will delete the sector from the map
+			
+			// This will display the sections available in the sector
+			map[row][col].availableSection();
+			
+			Scanner scan = new Scanner(System.in);
+			System.out.println("Please select one sector with a level 1 system");
+			int hexesID = scan.nextInt();
+			map[row][col].expand(hexesID, 2);
+		}
+		
+		// Loop through the players in anti clockwise direction
+		for(int i = playerList.size() - 1; i >= 0; i--) {
+			currentPlayer = playerList.get(i);
+			
+			// Display all the free Sectors
+			for (int row = 0; row < 3; row++) {
+				for (int col = 0; col < 3; col++) {
+					map[row][col].displayFreeSector();
+				}
+			}
+			
+			// Ask the current player to place the initial 2 ships to start the game
+			int sectorID = -1;
+			while(!freeSectorID.contains(sectorID)) {
+				System.out.println(currentPlayer.getName() + " you have 15 ships, please place 2 ships "
+						+ "on an unoccupied level 1 system in an unoccupied Sector");
+				System.out.println("Please select the sector you want");
+				Scanner scan = new Scanner(System.in);
+				sectorID = scan.nextInt();
+			}
+			
+			// Check which sector it corresponds to the map and set the player as the owner
+			int row = (sectorID-1)/3; // will get a number from 0 to 2
+			int col = (sectorID-1)%3; // will get a number from 0 to 2
+			map[row][col].setOwner(currentPlayer); // Sets the player as the owner of the sector
+			freeSectorID.remove(sectorID); // will delete the sector from the map
+			
+			// This will display the sections available in the sector
+			map[row][col].availableSection();
+			
+			Scanner scan = new Scanner(System.in);
+			System.out.println("Please select one sector with a level 1 system");
+			int hexesID = scan.nextInt();
+			map[row][col].expand(hexesID, 2);
+			
+		}
+	}
+	
 	public void startTurn() {
 		System.out.println("Turn starting");
 		Iterator<Player> playerIterator = playerList.iterator();
+		// Set move set
 		while(playerIterator.hasNext()) {
 			Player currentPlayer = playerIterator.next();
 			for(int i = 0; i < 3; i++) {
@@ -72,9 +155,6 @@ public class Game {
 		}
 	}
 	
-	public void perform() {
-		
-	}
 	
 	public void buildMap() {
 		map = new Sector[3][3]; // Makes the 9 Sector that will be used for the game
@@ -110,12 +190,22 @@ public class Game {
         }
     }
 	
+	public Set<Integer> availableSectors() {
+		Set<Integer> Sectors = new HashSet<Integer>();
+		for (int row = 0; row < 3; row++) {
+			for (int col = 0; col < 3; col++) {
+				map[row][col].displayFreeSector();
+				int sectorID = map[row][col].getFreeSectorID();
+				Sectors.add(sectorID);
+			}
+		}
+		return Sectors;
+	}
 	
 	// Main function, i.e the entry of our game
 	public static void main(String[] args) {
 		Game PocketImperium = new Game();
 		PocketImperium.startGame();
-		
 	}
 
 }

@@ -6,14 +6,14 @@ public class Player {
 	private String name;
 	private String color;
 	private int point;
-	private int fleetAvailable;
+	private int ships;
 	private List<CommandCard> command;
 	
-	public Player(String name, String color) {
+	public Player(String name, String color, int ships) {
 		this.name = name;
 		this.color = color;
 		this.point = 0;
-		fleetAvailable = 15;
+		this.ships = ships;
 		this.command = new ArrayList();
 	}
 	
@@ -44,5 +44,9 @@ public class Player {
 			moveSet.add(commandIterator.next().toString());
 		}
 		return moveSet;
+	}
+	
+	public void perform() {
+		
 	}
 }
