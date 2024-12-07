@@ -9,11 +9,11 @@ public class Player {
 	private int ships;
 	private List<CommandCard> command;
 	
-	public Player(String name, String color, int ships) {
+	public Player(String name, String color) {
 		this.name = name;
 		this.color = color;
 		this.point = 0;
-		this.ships = ships;
+		this.ships = 15;
 		this.command = new ArrayList();
 	}
 	
@@ -48,5 +48,13 @@ public class Player {
 	
 	public void perform() {
 		
+	}
+	
+	public void placeShips(int shipsPlaced) {
+		this.ships = this.ships - shipsPlaced;
+	}
+	
+	public int getRemainingShips() {
+		return this.ships;
 	}
 }

@@ -38,7 +38,7 @@ public class Game {
 		for(int i = 0; i < numberPlayer; i++) {
 			System.out.println("What is the name of the player?");
 			name = scan.nextLine();
-			Player player = new Player(name, color[i], 15);
+			Player player = new Player(name, color[i]);
 			playerList.add(player);
 		}
 		
@@ -76,8 +76,8 @@ public class Game {
 			// Ask the current player to place the initial 2 ships to start the game
 			int sectorID = -1;
 			while(!freeSectorID.contains(sectorID)) {
-				System.out.println(currentPlayer.getName() + " you have 15 ships, please place 2 ships "
-						+ "on an unoccupied level 1 system in an unoccupied Sector");
+				System.out.println(currentPlayer.getName() + " you have " + currentPlayer.getRemainingShips() + 
+						" ships, please place 2 ships on an unoccupied level 1 system in an unoccupied Sector");
 				System.out.println("Please select the sector you want");
 				Scanner scan = new Scanner(System.in);
 				sectorID = scan.nextInt();
@@ -92,10 +92,17 @@ public class Game {
 			// This will display the sections available in the sector
 			map[row][col].availableSection();
 			
-			Scanner scan = new Scanner(System.in);
-			System.out.println("Please select one sector with a level 1 system");
-			int hexesID = scan.nextInt();
+			// This will force the user to only select a level 1 system
+			int systemLevel = 0;
+			int hexesID = -1;
+			while(systemLevel != 1) {
+				Scanner scan = new Scanner(System.in);
+				System.out.println("Please select one sector with a level 1 system");
+				hexesID = scan.nextInt();
+				systemLevel = map[row][col].getSystemLevel(hexesID);
+			}
 			map[row][col].expand(hexesID, 2);
+			currentPlayer.placeShips(2);
 		}
 		
 		// Loop through the players in anti clockwise direction
@@ -112,8 +119,8 @@ public class Game {
 			// Ask the current player to place the initial 2 ships to start the game
 			int sectorID = -1;
 			while(!freeSectorID.contains(sectorID)) {
-				System.out.println(currentPlayer.getName() + " you have 15 ships, please place 2 ships "
-						+ "on an unoccupied level 1 system in an unoccupied Sector");
+				System.out.println(currentPlayer.getName() + " you have " + currentPlayer.getRemainingShips() + 
+						" ships, please place 2 ships on an unoccupied level 1 system in an unoccupied Sector");
 				System.out.println("Please select the sector you want");
 				Scanner scan = new Scanner(System.in);
 				sectorID = scan.nextInt();
@@ -128,11 +135,17 @@ public class Game {
 			// This will display the sections available in the sector
 			map[row][col].availableSection();
 			
-			Scanner scan = new Scanner(System.in);
-			System.out.println("Please select one sector with a level 1 system");
-			int hexesID = scan.nextInt();
+			// This will force the user to only select a level 1 system
+			int systemLevel = 0;
+			int hexesID = -1;
+			while(systemLevel != 1) {
+				Scanner scan = new Scanner(System.in);
+				System.out.println("Please select one sector with a level 1 system");
+				hexesID = scan.nextInt();
+				systemLevel = map[row][col].getSystemLevel(hexesID);
+			}
 			map[row][col].expand(hexesID, 2);
-			
+			currentPlayer.placeShips(2);
 		}
 	}
 	
@@ -164,9 +177,16 @@ public class Game {
 		for(int row = 0; row < 3; row++) {
 			for(int column = 0; column < 3; column++) {
 				List<Hex> hexes = new ArrayList<>();
-				// Sector with 3 hexes
-				for(int i = 0; i < 3; i++) {
-					Hex hex = new Hex(sectorID, i+1);
+				List<Integer> hexLevel = new ArrayList<Integer>();
+				
+				// Randomly assign the map different sectors
+				Collections.addAll(hexLevel, 1, 1, 2, 0, 0);
+				Collections.shuffle(hexLevel);
+				
+				// Sector with 5 hexes
+				for(int i = 0; i < 5; i++) {
+					int systemLevel = hexLevel.get(i);
+					Hex hex = new Hex(sectorID, systemLevel); // will assign a random system level
 					hexes.add(hex);
 				}
 				// Assign the sector to one part of the map

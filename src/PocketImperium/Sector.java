@@ -21,11 +21,17 @@ public class Sector {
 		return this.section;
 	}
 	
+	public int getSystemLevel(int hexesID) {
+		return this.section.get(hexesID).getSystemLevel();
+	}
+	
 	// Display all the available sections, or hexes that are free in this sector
 	public void availableSection() {
 		for(int i = 0; i < section.size(); i++) {
 			if(this.section.get(i).fleetAvailablity() > 0) {
-				System.out.println(i + " section has space for this " + this.section.get(i).fleetAvailablity());
+				System.out.println("No." + i + " section has space. It is a system Level of " + 
+						this.section.get(i).getSystemLevel() + ", and it has space for " + 
+						this.section.get(i).fleetAvailablity() + " ships.");
 			}
 		}
 	}
