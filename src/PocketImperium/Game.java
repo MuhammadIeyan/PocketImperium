@@ -33,24 +33,22 @@ public class Game implements Serializable{
 				menu = scanmenu.nextInt();
 			} else {
 				System.out.println("Invalid input. Please enter 1 or 2.");
-				scanmenu.next(); // Clear invalid input
+				scanmenu.next();
 			}
 		}
 	
 		if (menu == 2) {
-			// Charger une partie
+			// load game
 			System.out.print("Enter the filename to load the game: ");
 			String filename = scanmenu.next();
 			try {
 				Game loadedGame = loadFromObject(filename);
-				// Vous pouvez maintenant utiliser loadedGame pour continuer la partie
 				this.playerList = loadedGame.playerList;
 				this.turnNumber = loadedGame.turnNumber;
 				this.isFinished = loadedGame.isFinished;
 				this.map = loadedGame.map;
-				// Continuez avec le jeu chargé
 				startTurn();
-				return; // Sortir de la méthode pour ne pas redémarrer le jeu
+				return;
 			} catch (IOException | ClassNotFoundException e) {
 				System.out.println("Failed to load game: " + e.getMessage());
 				return; // Sortir si le chargement échoue
@@ -198,6 +196,28 @@ public class Game implements Serializable{
 		while(playerIterator.hasNext()) {
 			Player currentPlayer = playerIterator.next();
 			currentPlayer.getPlanList().clear();
+			System.out.println(currentPlayer.getName() + ", it's your turn. Press 'q' to save the game or any other key to continue.");
+        
+			Scanner scan = new Scanner(System.in);
+			String input = scan.nextLine();
+			
+			if (input.equalsIgnoreCase("q")) {
+				// Demander si le joueur veut sauvegarder
+				System.out.print("Do you want to save the game? (yes/no): ");
+				String response = scan.nextLine();
+				if (response.equalsIgnoreCase("yes")) {
+					System.out.print("Enter the filename to save the game: ");
+					String filename = scan.nextLine();
+					try {
+						saveToObject(this, filename);
+						System.out.println("Game saved successfully.");
+					} catch (IOException e) {
+						System.out.println("Failed to save game: " + e.getMessage());
+					}
+				}
+				// Continuer le tour après la sauvegarde ou si le joueur a choisi de ne pas sauvegarder
+				continue;
+			}
             currentPlayer.plan();
 		}
 	}

@@ -1,6 +1,8 @@
 package PocketImperium;
 
-public class Hex{
+import java.io.Serializable;
+
+public class Hex implements Serializable {
 	private int sectorID;
 	private int systemLevel;
 	private int fleet;

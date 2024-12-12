@@ -1,8 +1,9 @@
 package PocketImperium;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class BotPlayer extends Player {
+public class BotPlayer extends Player implements Serializable {
     public enum Strategy {
         AGGRESSIVE, DEFENSIVE, RANDOM
     }

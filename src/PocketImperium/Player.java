@@ -1,12 +1,13 @@
 package PocketImperium;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Player {
+public class Player implements Serializable {
     private String name;
     private String color;
     private Map<Hex, Integer> fleetList; // Associe un Hex à un nombre de vaisseaux

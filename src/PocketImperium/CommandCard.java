@@ -1,6 +1,8 @@
 package PocketImperium;
 
-public class CommandCard {
+import java.io.Serializable;
+
+public class CommandCard implements Serializable {
     public enum Command {
         EXPAND, EXPLORE, EXTERMINATE
     }

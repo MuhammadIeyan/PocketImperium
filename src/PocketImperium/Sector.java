@@ -1,8 +1,9 @@
 package PocketImperium;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Sector {
+public class Sector implements Serializable {
 	private int sectorID;
 	private List<Hex> section;
 	private Player owner;
