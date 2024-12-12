@@ -158,13 +158,10 @@ public class Game {
 			for(int i = 0; i < 3; i++) {
 				System.out.println(currentPlayer.getName() + " please select your move order");
 				System.out.println("1 for Explore, 2 for Expand, 3 for Exterminate");
-				Scanner scan = new Scanner(System.in);
-				currentPlayer.setCommand(scan.nextInt());
+				currentPlayer.getPlanList().clear();
+            	currentPlayer.plan();
 			}
-			System.out.println(currentPlayer.getCommand());
-			
-			// Remove the command sets of the player
-			currentPlayer.resetCommand();
+			System.out.println(currentPlayer.getPlanList());
 		}
 	}
 	
