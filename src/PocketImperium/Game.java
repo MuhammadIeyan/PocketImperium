@@ -171,8 +171,8 @@ public class Game {
 		
 		int sectorID = 1;
 		// Build one sector at a time
-		for(int row = 0; row < 3; row++) {
-			for(int column = 0; column < 3; column++) {
+		for(int row = 0; row < map.length; row++) {
+			for(int column = 0; column < map[row].length; column++) {
 				List<Hex> hexes = new ArrayList<>();
 				List<Integer> hexLevel = new ArrayList<Integer>();
 				
@@ -195,8 +195,8 @@ public class Game {
 	}
 	
 	public void displayMap() {
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
+        for (int row = 0; row < map.length; row++) {
+            for (int col = 0; col < map[row].length; col++) {
                 Sector sector = map[row][col];
                 System.out.println("Sector ID: " + sector.getSectorId());
                 System.out.println("Hexes:");
@@ -209,8 +209,8 @@ public class Game {
 	
 	public Set<Integer> availableSectors() {
 		Set<Integer> Sectors = new HashSet<Integer>();
-		for (int row = 0; row < 3; row++) {
-			for (int col = 0; col < 3; col++) {
+		for (int row = 0; row < map.length; row++) {
+			for (int col = 0; col < map[row].length; col++) {
 				map[row][col].displayFreeSector();
 				int sectorID = map[row][col].getFreeSectorID();
 				Sectors.add(sectorID);
