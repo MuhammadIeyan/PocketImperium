@@ -1,8 +1,14 @@
 package PocketImperium;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.*;
 
-public class Game {
+public class Game implements Serializable{
 	private List<Player> playerList;
 	private int turnNumber;
 	private boolean isFinished;
@@ -16,6 +22,42 @@ public class Game {
 	public void startGame() {
 		System.out.println("Welcome to Pocket Imperium");
 		
+		int menu = 0;
+		System.out.println("1 : New Game");
+		System.out.println("2 : Load Game");
+		Scanner scanmenu = new Scanner(System.in);
+		
+		while (menu != 1 && menu != 2) {
+			System.out.print(">>> ");
+			if (scanmenu.hasNextInt()) {
+				menu = scanmenu.nextInt();
+			} else {
+				System.out.println("Invalid input. Please enter 1 or 2.");
+				scanmenu.next(); // Clear invalid input
+			}
+		}
+	
+		if (menu == 2) {
+			// Charger une partie
+			System.out.print("Enter the filename to load the game: ");
+			String filename = scanmenu.next();
+			try {
+				Game loadedGame = loadFromObject(filename);
+				// Vous pouvez maintenant utiliser loadedGame pour continuer la partie
+				this.playerList = loadedGame.playerList;
+				this.turnNumber = loadedGame.turnNumber;
+				this.isFinished = loadedGame.isFinished;
+				this.map = loadedGame.map;
+				// Continuez avec le jeu chargé
+				startTurn();
+				return; // Sortir de la méthode pour ne pas redémarrer le jeu
+			} catch (IOException | ClassNotFoundException e) {
+				System.out.println("Failed to load game: " + e.getMessage());
+				return; // Sortir si le chargement échoue
+			}
+		}
+
+
 		// Ask how many players will play in the game
 		int numberPlayer = -1;
 		System.out.println("How many players are in the game? (3 Player Maximum)");
@@ -155,13 +197,8 @@ public class Game {
 		// Set move set
 		while(playerIterator.hasNext()) {
 			Player currentPlayer = playerIterator.next();
-			for(int i = 0; i < 3; i++) {
-				System.out.println(currentPlayer.getName() + " please select your move order");
-				System.out.println("1 for Explore, 2 for Expand, 3 for Exterminate");
-				currentPlayer.getPlanList().clear();
-            	currentPlayer.plan();
-			}
-			System.out.println(currentPlayer.getPlanList());
+			currentPlayer.getPlanList().clear();
+            currentPlayer.plan();
 		}
 	}
 	
@@ -222,6 +259,19 @@ public class Game {
 		}
 		return Sectors;
 	}
+
+	public static void saveToObject(Game game, String filename) throws IOException {
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+			oos.writeObject(game);
+		}
+	}
+	
+	public static Game loadFromObject(String filename) throws IOException, ClassNotFoundException {
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+			return (Game) ois.readObject();
+		}
+	}
+
 	
 	// Main function, i.e the entry of our game
 	public static void main(String[] args) {

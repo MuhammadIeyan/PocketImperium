@@ -19,7 +19,7 @@ public class Player {
 		this.color = color;
 		this.points = 0;
 		this.ships = 15;
-		this.planList = new ArrayList();
+		this.planList = new ArrayList<CommandCard>();
 	}
 
     // Getters and Setters
