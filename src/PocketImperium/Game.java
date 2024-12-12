@@ -175,16 +175,20 @@ public class Game {
 			for(int column = 0; column < map[row].length; column++) {
 				List<Hex> hexes = new ArrayList<>();
 				List<Integer> hexLevel = new ArrayList<Integer>();
-				
-				// Randomly assign the map different sectors
-				Collections.addAll(hexLevel, 1, 1, 2, 0, 0);
-				Collections.shuffle(hexLevel);
-				
-				// Sector with 5 hexes
-				for(int i = 0; i < 5; i++) {
-					int systemLevel = hexLevel.get(i);
-					Hex hex = new Hex(sectorID, systemLevel); // will assign a random system level
+				if (row == map.length /2 && column == map[row].length /2){
+					Hex hex = new Hex(sectorID, 3);
 					hexes.add(hex);
+				}
+				else {
+					// Randomly assign the map different sectors
+					Collections.addAll(hexLevel, 1, 1, 2, 0, 0);
+					Collections.shuffle(hexLevel);
+					// Sector with 5 hexes
+					for(int i = 0; i < 5; i++) {
+						int systemLevel = hexLevel.get(i);
+						Hex hex = new Hex(sectorID, systemLevel); // will assign a random system level
+						hexes.add(hex);
+				}
 				}
 				// Assign the sector to one part of the map
 				map[row][column] = new Sector(sectorID, hexes);
