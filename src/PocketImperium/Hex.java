@@ -32,13 +32,17 @@ public class Hex implements Serializable {
 	}
 	
 	public void setFleet(int fleetEntering) {
+		this.fleet += fleetEntering;
+	}
+	
+	// Will return the extra number of fleets so that it can go back to the player
+	public int extraFleet() {
 		// Set the fleet number to be at max the systemLevel
-		if(this.fleet + fleetEntering <= systemLevel + 1) {
-			this.fleet += fleetEntering;
+		if (this.fleet > systemLevel + 1) {
+			int extraFleet = this.fleet - (systemLevel + 1);
+			this.fleet = systemLevel + 1;
+			return extraFleet;
 		}
-		
-		else {
-			this.fleet += systemLevel + 1;
-		}
+		return 0;
 	}
 }

@@ -101,9 +101,6 @@ public class Player implements Serializable {
         System.out.println("Planification terminée pour " + name + ".");
         System.out.println("Ordre choisi : " + planList);
     }
-    
-    
-    
 
     public void expand(int shipNumber, Hex newHex) {
         // Étendre sa flotte à un nouvel Hex

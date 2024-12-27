@@ -25,22 +25,22 @@ public class Game implements Serializable{
 		int menu = 0;
 		System.out.println("1 : New Game");
 		System.out.println("2 : Load Game");
-		Scanner scanmenu = new Scanner(System.in);
+		Scanner scanMenu = new Scanner(System.in);
 		
 		while (menu != 1 && menu != 2) {
 			System.out.print(">>> ");
-			if (scanmenu.hasNextInt()) {
-				menu = scanmenu.nextInt();
+			if (scanMenu.hasNextInt()) {
+				menu = scanMenu.nextInt();
 			} else {
 				System.out.println("Invalid input. Please enter 1 or 2.");
-				scanmenu.next();
+				scanMenu.next();
 			}
 		}
 	
 		if (menu == 2) {
 			// load game
 			System.out.print("Enter the filename to load the game: ");
-			String filename = scanmenu.next();
+			String filename = scanMenu.next();
 			try {
 				Game loadedGame = loadFromObject(filename);
 				this.playerList = loadedGame.playerList;
@@ -120,7 +120,9 @@ public class Game implements Serializable{
 						" ships, please place 2 ships on an unoccupied level 1 system in an unoccupied Sector");
 				System.out.println("Please select the sector you want");
 				Scanner scan = new Scanner(System.in);
-				sectorID = scan.nextInt();
+				while(sectorID == -1 || sectorID == 5) {
+					sectorID = scan.nextInt();
+				}
 			}
 			
 			// Check which sector it corresponds to the map and set the player as the owner
@@ -163,7 +165,10 @@ public class Game implements Serializable{
 						" ships, please place 2 ships on an unoccupied level 1 system in an unoccupied Sector");
 				System.out.println("Please select the sector you want");
 				Scanner scan = new Scanner(System.in);
-				sectorID = scan.nextInt();
+				while(sectorID == -1 || sectorID == 5) {
+					sectorID = scan.nextInt();
+				}
+				
 			}
 			
 			// Check which sector it corresponds to the map and set the player as the owner
@@ -220,6 +225,15 @@ public class Game implements Serializable{
 			}
             currentPlayer.plan();
 		}
+		
+		// Check the cards chosen by the players
+		// with the order: Expand - Explore - Exterminate
+		int[] expandRepeat = this.commandRepeats().get(0);
+		int[] exploreRepeat = this.commandRepeats().get(1);
+		int[] exterminateRepeat = this.commandRepeats().get(2);
+		System.out.println(Arrays.toString(expandRepeat));
+		System.out.println(Arrays.toString(exploreRepeat));
+		System.out.println(Arrays.toString(exterminateRepeat));
 	}
 	
 	
@@ -245,7 +259,7 @@ public class Game implements Serializable{
 						int systemLevel = hexLevel.get(i);
 						Hex hex = new Hex(sectorID, systemLevel); // will assign a random system level
 						hexes.add(hex);
-				}
+					}
 				}
 				// Assign the sector to one part of the map
 				map[row][column] = new Sector(sectorID, hexes);
@@ -279,6 +293,48 @@ public class Game implements Serializable{
 		}
 		return Sectors;
 	}
+	
+	public List<int[]> commandRepeats() {
+		// Check how many times they are being repeated in a turn
+		int[] expandRepeat = new int[3];
+		int[] exploreRepeat = new int[3];
+		int[] exterminateRepeat = new int[3];
+		List<int[]> cardRepeat = new ArrayList<int[]>();
+		
+		// Check the moves selected in order for each player
+		for (int i = 0; i < 3; i++) {
+			Iterator<Player> playerIterator = playerList.iterator();
+			int expandRepeating = 0;
+			int exploreRepeating = 0;
+			int exterminateRepeating = 0;
+			while(playerIterator.hasNext()) {
+				Player currentPlayer = playerIterator.next();
+				String card = currentPlayer.getPlanList().get(i).toString(); // This will get the command chosen by the player
+				switch (card) {
+				case "EXPAND":
+					expandRepeating++;
+					break;
+				case "EXPLORE":
+					exploreRepeating++;
+					break;
+				case "EXTERMINATE":
+					exterminateRepeating++;	
+					break;
+				}
+			}
+			
+			// Add repetitions in an array so we can get the move
+			expandRepeat[i] = expandRepeating;
+			exploreRepeat[i] = exploreRepeating;
+			exterminateRepeat[i] = exterminateRepeating;
+		}
+		
+		// Add all the values in 1 single List
+		cardRepeat.add(expandRepeat);
+		cardRepeat.add(exploreRepeat);
+		cardRepeat.add(exterminateRepeat);
+		return cardRepeat;
+	}
 
 	public static void saveToObject(Game game, String filename) throws IOException {
 		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
@@ -292,6 +348,8 @@ public class Game implements Serializable{
 		}
 	}
 
+	
+	
 	
 	// Main function, i.e the entry of our game
 	public static void main(String[] args) {
