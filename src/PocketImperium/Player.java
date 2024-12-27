@@ -14,6 +14,7 @@ public class Player implements Serializable {
 	private int ships;
     private int points;
     private List<CommandCard> planList;
+    private List<Sector> ownedSector;
 
     public Player(String name, String color) {
 		this.name = name;
@@ -21,6 +22,7 @@ public class Player implements Serializable {
 		this.points = 0;
 		this.ships = 15;
 		this.planList = new ArrayList<CommandCard>();
+		this.ownedSector = new ArrayList<Sector>();
 	}
 
     // Getters and Setters
@@ -60,10 +62,15 @@ public class Player implements Serializable {
             int newFleetSize = currentFleet - fleetSize;
             if (newFleetSize <= 0) {
                 fleetList.remove(hex);
-            } else {
+            }
+            else {
                 fleetList.put(hex, newFleetSize);
             }
         }
+    }
+    
+    public void setOwner(Sector freeSector) {
+    	ownedSector.add(freeSector);
     }
 
     // Actions

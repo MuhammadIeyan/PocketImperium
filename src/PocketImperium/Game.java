@@ -129,6 +129,8 @@ public class Game implements Serializable{
 			int row = (sectorID-1)/3; // will get a number from 0 to 2
 			int col = (sectorID-1)%3; // will get a number from 0 to 2
 			map[row][col].setOwner(currentPlayer); // Sets the player as the owner of the sector
+			currentPlayer.setOwner(map[row][col]); // To keep track of all the sectors owned by the player
+			
 			freeSectorID.remove(sectorID); // will delete the sector from the map
 			
 			// This will display the sections available in the sector
@@ -175,6 +177,8 @@ public class Game implements Serializable{
 			int row = (sectorID-1)/3; // will get a number from 0 to 2
 			int col = (sectorID-1)%3; // will get a number from 0 to 2
 			map[row][col].setOwner(currentPlayer); // Sets the player as the owner of the sector
+			currentPlayer.setOwner(map[row][col]); // To keep track of all the sectors owned by the player
+			
 			freeSectorID.remove(sectorID); // will delete the sector from the map
 			
 			// This will display the sections available in the sector
@@ -231,11 +235,54 @@ public class Game implements Serializable{
 		int[] expandRepeat = this.commandRepeats().get(0);
 		int[] exploreRepeat = this.commandRepeats().get(1);
 		int[] exterminateRepeat = this.commandRepeats().get(2);
-		System.out.println(Arrays.toString(expandRepeat));
-		System.out.println(Arrays.toString(exploreRepeat));
-		System.out.println(Arrays.toString(exterminateRepeat));
+		System.out.println("Expand array: " + Arrays.toString(expandRepeat));
+		System.out.println("Explore array: " + Arrays.toString(exploreRepeat));
+		System.out.println("Expterminate array: " + Arrays.toString(exterminateRepeat));
+		System.out.println();
+		List<Integer> playerOrder = this.setTurnOrder(expandRepeat, exploreRepeat, exterminateRepeat);
+		for (int i = 0; i < playerOrder.size(); i++) {
+			System.out.println("Player number " + (playerOrder.get(i) + 1) + " will play...");
+		}
+		
 	}
 	
+	public List<Integer> setTurnOrder(int[] expandRepeat, int[] exploreRepeat, int[] exterminateRepeat) {
+		List<Integer> playerTurnOrder = new ArrayList<Integer>();
+		
+		// Because we have 3 command cards, we will loop through the players 3 times
+		for (int i = 0; i < 3; i++) {
+			while (expandRepeat[i] > 0) {
+				for (int j = 0; j < playerList.size(); j++) {
+					String command = playerList.get(j).getPlanList().get(i).toString();
+					if(command.equals("EXPAND")) {
+						playerTurnOrder.add(j);
+					}
+					expandRepeat[i]--;
+				}
+			}
+			
+			while (exploreRepeat[i] > 0) {
+				for (int j = 0; j < playerList.size(); j++) {
+					String command = playerList.get(j).getPlanList().get(i).toString();
+					if(command.equals("EXPLORE")) {
+						playerTurnOrder.add(j);
+					}
+					exploreRepeat[i]--;
+				}
+			}
+			
+			while (exterminateRepeat[i] > 0) {
+				for (int j = 0; j < playerList.size(); j++) {
+					String command = playerList.get(j).getPlanList().get(i).toString();
+					if(command.equals("EXTERMINATE")) {
+						playerTurnOrder.add(j);
+					}
+					exterminateRepeat[i]--;
+				}
+			}
+		}
+		return playerTurnOrder;
+	}
 	
 	public void buildMap() {
 		map = new Sector[3][3]; // Makes the 9 Sector that will be used for the game
@@ -347,9 +394,6 @@ public class Game implements Serializable{
 			return (Game) ois.readObject();
 		}
 	}
-
-	
-	
 	
 	// Main function, i.e the entry of our game
 	public static void main(String[] args) {

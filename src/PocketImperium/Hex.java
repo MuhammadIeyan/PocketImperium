@@ -6,10 +6,12 @@ public class Hex implements Serializable {
 	private int sectorID;
 	private int systemLevel;
 	private int fleet;
+	private boolean isOccupied;
 	
 	public Hex(int sectorID, int systemLevel) {
 		this.sectorID = sectorID;
 		this.systemLevel = systemLevel;
+		isOccupied = false;
 	}
 	
 	public int getSystemLevel() {
@@ -33,6 +35,9 @@ public class Hex implements Serializable {
 	
 	public void setFleet(int fleetEntering) {
 		this.fleet += fleetEntering;
+		if (this.fleet > 0) {
+			this.isOccupied = true;
+		}
 	}
 	
 	// Will return the extra number of fleets so that it can go back to the player
