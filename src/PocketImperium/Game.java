@@ -47,6 +47,7 @@ public class Game implements Serializable{
 				this.turnNumber = loadedGame.turnNumber;
 				this.isFinished = loadedGame.isFinished;
 				this.map = loadedGame.map;
+				displayMap();
 				startTurn();
 				return;
 			} catch (IOException | ClassNotFoundException e) {
@@ -200,38 +201,40 @@ public class Game implements Serializable{
 	
 	public void startTurn() {
 		System.out.println("Turn starting");
+		
+		// Offrir la possibilité de sauvegarder au début du tour
+		System.out.println("Press 'q' to save the game or any other key to start the turn.");
+		Scanner scan = new Scanner(System.in);
+		String input = scan.nextLine();
+		
+		if (input.equalsIgnoreCase("q")) {
+			System.out.print("Do you want to save the game? (yes/no): ");
+			String response = scan.nextLine();
+			if (response.equalsIgnoreCase("yes")) {
+				System.out.print("Enter the filename to save the game: ");
+				String filename = scan.nextLine();
+				try {
+					saveToObject(this, filename);
+					System.out.println("Game saved successfully.");
+				} catch (IOException e) {
+					System.out.println("Failed to save game: " + e.getMessage());
+				}
+			}
+		}
+	
+		// Initialiser l'itérateur des joueurs et lancer le tour
 		Iterator<Player> playerIterator = playerList.iterator();
-		// Set move set
-		while(playerIterator.hasNext()) {
+	
+		while (playerIterator.hasNext()) {
 			Player currentPlayer = playerIterator.next();
 			currentPlayer.getPlanList().clear();
-			System.out.println(currentPlayer.getName() + ", it's your turn. Press 'q' to save the game or any other key to continue.");
-        
-			Scanner scan = new Scanner(System.in);
-			String input = scan.nextLine();
+			System.out.println(currentPlayer.getName() + ", it's your turn. Preparing actions...");
 			
-			if (input.equalsIgnoreCase("q")) {
-				// Demander si le joueur veut sauvegarder
-				System.out.print("Do you want to save the game? (yes/no): ");
-				String response = scan.nextLine();
-				if (response.equalsIgnoreCase("yes")) {
-					System.out.print("Enter the filename to save the game: ");
-					String filename = scan.nextLine();
-					try {
-						saveToObject(this, filename);
-						System.out.println("Game saved successfully.");
-					} catch (IOException e) {
-						System.out.println("Failed to save game: " + e.getMessage());
-					}
-				}
-				// Continuer le tour après la sauvegarde ou si le joueur a choisi de ne pas sauvegarder
-				continue;
-			}
-            currentPlayer.plan();
+			// Appeler la méthode plan() pour que le joueur prépare ses actions
+			currentPlayer.plan();
 		}
-		
-		// Check the cards chosen by the players
-		// with the order: Expand - Explore - Exterminate
+	
+		// Vérification des cartes choisies par les joueurs
 		int[] expandRepeat = this.commandRepeats().get(0);
 		int[] exploreRepeat = this.commandRepeats().get(1);
 		int[] exterminateRepeat = this.commandRepeats().get(2);
@@ -239,12 +242,13 @@ public class Game implements Serializable{
 		System.out.println("Explore array: " + Arrays.toString(exploreRepeat));
 		System.out.println("Expterminate array: " + Arrays.toString(exterminateRepeat));
 		System.out.println();
+		
 		List<Integer> playerOrder = this.setTurnOrder(expandRepeat, exploreRepeat, exterminateRepeat);
 		for (int i = 0; i < playerOrder.size(); i++) {
 			System.out.println("Player number " + (playerOrder.get(i) + 1) + " will play...");
 		}
-		
 	}
+	
 	
 	public List<Integer> setTurnOrder(int[] expandRepeat, int[] exploreRepeat, int[] exterminateRepeat) {
 		List<Integer> playerTurnOrder = new ArrayList<Integer>();
