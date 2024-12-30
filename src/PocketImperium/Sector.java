@@ -76,6 +76,22 @@ public class Sector implements Serializable {
 	public void setOwner(Player player) {
 		this.owner = player;
 	}
+
+	public String getOwnerName() {
+		if (this.owner != null) {
+			return this.owner.getName();
+		}
+		return null; // Si le secteur n'a pas de propriétaire
+	}
+	
+
+    public Hex getHex(int hexesID) {
+		if (hexesID < 0 || hexesID >= section.size()) {
+			throw new IllegalArgumentException("Invalid hexesID: " + hexesID);
+		}
+		return section.get(hexesID);
+	}
+	
 	
 	
 }

@@ -18,6 +18,20 @@ public class Game implements Serializable{
 	public Game() {
 		this.playerList = new ArrayList<>();
 	}
+
+	public List<Sector> getMap() {
+        List<Sector> sectorList = new ArrayList<>();
+        
+        // Parcourir le tableau bidimensionnel pour ajouter chaque secteur à la liste
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[i].length; j++) {
+                sectorList.add(map[i][j]); // Ajoute chaque secteur à la liste
+            }
+        }
+        
+        return sectorList;
+    }
+	
 	
 	public void startGame() {
 		System.out.println("Welcome to Pocket Imperium");
@@ -129,7 +143,7 @@ public class Game implements Serializable{
 			// Check which sector it corresponds to the map and set the player as the owner
 			int row = (sectorID-1)/3; // will get a number from 0 to 2
 			int col = (sectorID-1)%3; // will get a number from 0 to 2
-			map[row][col].setOwner(currentPlayer); // Sets the player as the owner of the sector
+			map[row][col].setOwner(currentPlayer);// Sets the player as the owner of the sector
 			currentPlayer.setOwner(map[row][col]); // To keep track of all the sectors owned by the player
 			
 			freeSectorID.remove(sectorID); // will delete the sector from the map
@@ -147,6 +161,10 @@ public class Game implements Serializable{
 				systemLevel = map[row][col].getSystemLevel(hexesID);
 			}
 			map[row][col].expand(hexesID, 2);
+			Hex chosenHex = map[row][col].getHex(hexesID); // Récupère l'hexagone sélectionné
+			chosenHex.setOwner(currentPlayer); // Attribue le propriétaire à l'hexagone
+			currentPlayer.addFleet(chosenHex, 2); // Ajoute la flotte du joueur sur cet hexagone
+
 			currentPlayer.placeShips(2);
 		}
 		
@@ -195,6 +213,9 @@ public class Game implements Serializable{
 				systemLevel = map[row][col].getSystemLevel(hexesID);
 			}
 			map[row][col].expand(hexesID, 2);
+			Hex chosenHex = map[row][col].getHex(hexesID); // Récupère l'hexagone sélectionné
+			chosenHex.setOwner(currentPlayer); // Attribue le propriétaire à l'hexagone
+			currentPlayer.addFleet(chosenHex, 2);
 			currentPlayer.placeShips(2);
 		}
 	}
@@ -327,8 +348,18 @@ public class Game implements Serializable{
                 System.out.println("Sector ID: " + sector.getSectorId());
                 System.out.println("Hexes:");
                 for (Hex hex : sector.getSection()) {
-                    System.out.println("  Hex Level: " + hex.getSystemLevel() + ", Fleet: " + hex.getFleet());
-                }
+					// Affiche les informations de base du hexagone
+					System.out.print("  Hex Level: " + hex.getSystemLevel() + ", Fleet: " + hex.getFleet());
+				
+					// Vérifie si un propriétaire existe et l'affiche
+					if (hex.getOwner() != null) {
+						System.out.print(", Owner: " + hex.getOwner().getName());
+					}
+				
+					// Passe à la ligne suivante après l'affichage
+					System.out.println();
+				}
+				
             }
         }
     }
@@ -393,11 +424,21 @@ public class Game implements Serializable{
 		}
 	}
 	
+	public Player getPlayerByName(String playerName) {
+		for (Player player : playerList) { // Assume playerList is the list of all players in the game
+			if (player.getName().equals(playerName)) {
+				return player;
+			}
+		}
+		return null; // If no player is found with the given name
+	}
+
 	public static Game loadFromObject(String filename) throws IOException, ClassNotFoundException {
 		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
 			return (Game) ois.readObject();
 		}
-	}
+	}	
+	
 	
 	// Main function, i.e the entry of our game
 	public static void main(String[] args) {

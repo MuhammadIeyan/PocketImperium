@@ -10,20 +10,22 @@ import java.util.Scanner;
 public class Player implements Serializable {
     private String name;
     private String color;
-    private Map<Hex, Integer> fleetList; // Associe un Hex à un nombre de vaisseaux
+    private Map<Hex, Integer> fleetList = new HashMap<>(); // Associe un Hex à un nombre de vaisseaux
 	private int ships;
     private int points;
     private List<CommandCard> planList;
     private List<Sector> ownedSector;
 
     public Player(String name, String color) {
-		this.name = name;
-		this.color = color;
-		this.points = 0;
-		this.ships = 15;
-		this.planList = new ArrayList<CommandCard>();
-		this.ownedSector = new ArrayList<Sector>();
-	}
+        this.name = name;
+        this.color = color;
+        this.points = 0;
+        this.ships = 15;
+        this.planList = new ArrayList<>();
+        this.ownedSector = new ArrayList<>();
+        this.fleetList = new HashMap<>();
+    }
+    
 
     // Getters and Setters
     public String getName() {
@@ -53,6 +55,7 @@ public class Player implements Serializable {
     public void addFleet(Hex hex, int fleetSize) {
         // Ajoute ou met à jour une flotte sur un Hex
         fleetList.put(hex, fleetList.getOrDefault(hex, 0) + fleetSize);
+        
     }
 
     public void removeFleet(Hex hex, int fleetSize) {
