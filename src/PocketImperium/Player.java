@@ -149,6 +149,8 @@ public class Player implements Serializable {
        
        // Place the ships on the Hex
        sector.getSection().get(selectedHex).setFleet(shipNumber);
+       System.out.println("Hex number " + selectedHex + " has " + 
+    		   				sector.getSection().get(selectedHex).getFleet() + " ships \n");
     }
 
     public void exterminate(List<Hex> attackHexes, List<Integer> shipNumbers) {
