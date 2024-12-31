@@ -112,10 +112,43 @@ public class Player implements Serializable {
         System.out.println("Ordre choisi : " + planList);
     }
 
-    public void expand(int shipNumber, Hex newHex) {
-        // Étendre sa flotte à un nouvel Hex
-        addFleet(newHex, shipNumber);
-        System.out.println(name + " a étendu sa flotte sur l'hexagone " + newHex);
+    public void expand(int shipNumber) {
+    	// Display all the owned sectors
+    	List<Integer> sectorID = new ArrayList<Integer>();
+       for(int i = 0; i <  this.ownedSector.size(); i++) {
+    	   System.out.println(this.name + " owns the " + this.ownedSector.get(i).getSectorId() + " sector");
+    	   sectorID.add(this.ownedSector.get(i).getSectorId());
+       }
+       
+       // Ask the user for the hex, he wants to put the ships on
+       Scanner scan = new Scanner(System.in);
+       System.out.println("Please select your sector to place " + shipNumber + " numbers of ships");
+       int selectedSector = -1;
+       int selectedSectorIndex = -1;
+       while(sectorID.contains(selectedSector) == false) {
+    	   selectedSector = scan.nextInt();
+    	   if (sectorID.contains(selectedSector)) {
+    		   selectedSectorIndex = sectorID.indexOf(selectedSector);
+    	   }
+       }
+       
+       // We have the sector now, the user will select the hex next
+       Sector sector = this.ownedSector.get(selectedSectorIndex);
+       List<Integer> ownedHex = new ArrayList<Integer>();
+       for(int i = 0; i < sector.getSection().size(); i++) {
+    	   if(sector.getSection().get(i).getAvailability() == true) {
+    		   System.out.println("You can place ships on the " + i + " hex.....");
+    		   ownedHex.add(i);
+    	   }
+       }
+       
+       int selectedHex = -1;
+       while(ownedHex.contains(selectedHex) == false) {
+    	   selectedHex = scan.nextInt();
+       }
+       
+       // Place the ships on the Hex
+       sector.getSection().get(selectedHex).setFleet(shipNumber);
     }
 
     public void exterminate(List<Hex> attackHexes, List<Integer> shipNumbers) {

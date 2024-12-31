@@ -261,12 +261,32 @@ public class Game implements Serializable{
 		int[] exterminateRepeat = this.commandRepeats().get(2);
 		System.out.println("Expand array: " + Arrays.toString(expandRepeat));
 		System.out.println("Explore array: " + Arrays.toString(exploreRepeat));
-		System.out.println("Expterminate array: " + Arrays.toString(exterminateRepeat));
+		System.out.println("Exterminate array: " + Arrays.toString(exterminateRepeat));
 		System.out.println();
 		
 		List<Integer> playerOrder = this.setTurnOrder(expandRepeat, exploreRepeat, exterminateRepeat);
+		Set<Integer> playerNextCommand = new HashSet<Integer>();
 		for (int i = 0; i < playerOrder.size(); i++) {
-			System.out.println("Player number " + (playerOrder.get(i) + 1) + " will play...");
+			int indexOfPlayer = playerOrder.get(i);
+			int nextCommand = 0; // To loop through each command of the player in order
+			if (playerNextCommand.contains(indexOfPlayer)) {
+				nextCommand++;
+			}
+			Player currentPlayer = playerList.get(indexOfPlayer);
+			System.out.println(currentPlayer.getName() + " it is your turn now.....");
+			System.out.println("You will play the command: " + currentPlayer.getPlanList().get(nextCommand).toString() + "\n");
+			String command = currentPlayer.getPlanList().get(nextCommand).toString();
+			if (command.equals("EXPAND")) {
+				currentPlayer.expand(2);
+			}
+			
+			playerNextCommand.add(indexOfPlayer);
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	

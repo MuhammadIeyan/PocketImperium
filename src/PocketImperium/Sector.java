@@ -30,9 +30,8 @@ public class Sector implements Serializable {
 	public void availableSection() {
 		for(int i = 0; i < section.size(); i++) {
 			if(this.section.get(i).fleetAvailablity() > 0) {
-				System.out.println("No." + i + " section has space. It is a system Level of " + 
-						this.section.get(i).getSystemLevel() + ", and it has space for " + 
-						this.section.get(i).fleetAvailablity() + " ships.");
+				System.out.println("No." + i + " section is a system Level of " + 
+						this.section.get(i).getSystemLevel() + ", and it has space");
 			}
 		}
 	}
