@@ -133,9 +133,9 @@ public class Game implements Serializable{
 			while(!freeSectorID.contains(sectorID)) {
 				System.out.println(currentPlayer.getName() + " you have " + currentPlayer.getRemainingShips() + 
 						" ships, please place 2 ships on an unoccupied level 1 system in an unoccupied Sector");
-				System.out.println("Please select the sector you want");
 				Scanner scan = new Scanner(System.in);
-				while(sectorID == -1 || sectorID == 5) {
+				while(sectorID == -1 || sectorID == 5 || !freeSectorID.contains(sectorID)) {
+					System.out.println("Please select the sector you want");
 					sectorID = scan.nextInt();
 				}
 			}
@@ -253,6 +253,7 @@ public class Game implements Serializable{
 			
 			// Appeler la méthode plan() pour que le joueur prépare ses actions
 			currentPlayer.plan();
+			System.out.println("\n"); // Pour sauter une ligne (mieux pour la visibilite en terminale)
 		}
 	
 		// Vérification des cartes choisies par les joueurs
@@ -264,23 +265,33 @@ public class Game implements Serializable{
 		System.out.println("Exterminate array: " + Arrays.toString(exterminateRepeat));
 		System.out.println();
 		
-		List<Integer> playerOrder = this.setTurnOrder(expandRepeat, exploreRepeat, exterminateRepeat);
-		Set<Integer> playerNextCommand = new HashSet<Integer>();
+		// Sets the order of the turn, i.e in what order the players will play their commands
+		List<Integer> playerOrder = this.setTurnOrder(expandRepeat, exploreRepeat, exterminateRepeat); // Keeps track of Player order
+		List<Integer> commandOrder = this.setCommandOrder(expandRepeat, exploreRepeat, exterminateRepeat); // Keeps track of Command order
+		System.out.println(playerOrder);
+		System.out.println(commandOrder);
+		
 		for (int i = 0; i < playerOrder.size(); i++) {
-			int indexOfPlayer = playerOrder.get(i);
-			int nextCommand = 0; // To loop through each command of the player in order
-			if (playerNextCommand.contains(indexOfPlayer)) {
-				nextCommand++;
-			}
-			Player currentPlayer = playerList.get(indexOfPlayer);
-			System.out.println(currentPlayer.getName() + " it is your turn now.....");
-			System.out.println("You will play the command: " + currentPlayer.getPlanList().get(nextCommand).toString() + "\n");
-			String command = currentPlayer.getPlanList().get(nextCommand).toString();
-			if (command.equals("EXPAND")) {
-				currentPlayer.expand(2);
-			}
+			int order = playerOrder.get(i);
+			int command = commandOrder.get(i);
 			
-			playerNextCommand.add(indexOfPlayer);
+			Player currentPlayer = playerList.get(order);
+			System.out.println(currentPlayer.getName() + " it is your turn now.....");
+			
+			// 0 represents EXPAND, 1 represents EXPLORE & 2 represents EXTERMINATE
+			switch(command) {
+			case 0:
+				System.out.println(currentPlayer.getName() + " will play the command EXPAND.....");
+				currentPlayer.expand(2);
+				break;
+			case 1:
+				System.out.println(currentPlayer.getName() + " will play the command EXPLORE.....");
+				break;
+			case 2:
+				System.out.println(currentPlayer.getName() + " will play the command EXTERMINATE.....");
+				break;
+			}
+			// Make a small pause in between
 			try {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
@@ -293,40 +304,72 @@ public class Game implements Serializable{
 	
 	public List<Integer> setTurnOrder(int[] expandRepeat, int[] exploreRepeat, int[] exterminateRepeat) {
 		List<Integer> playerTurnOrder = new ArrayList<Integer>();
+		// We need to make a local copy of the arrays to keep them intact
+		int[] expandCopy = expandRepeat.clone();
+		int[] exploreCopy = exploreRepeat.clone();
+		int[] exterminateCopy = exterminateRepeat.clone();
 		
 		// Because we have 3 command cards, we will loop through the players 3 times
 		for (int i = 0; i < 3; i++) {
-			while (expandRepeat[i] > 0) {
+			while (expandCopy[i] > 0) {
 				for (int j = 0; j < playerList.size(); j++) {
 					String command = playerList.get(j).getPlanList().get(i).toString();
 					if(command.equals("EXPAND")) {
 						playerTurnOrder.add(j);
 					}
-					expandRepeat[i]--;
+					expandCopy[i]--;
 				}
 			}
 			
-			while (exploreRepeat[i] > 0) {
+			while (exploreCopy[i] > 0) {
 				for (int j = 0; j < playerList.size(); j++) {
 					String command = playerList.get(j).getPlanList().get(i).toString();
 					if(command.equals("EXPLORE")) {
 						playerTurnOrder.add(j);
 					}
-					exploreRepeat[i]--;
+					exploreCopy[i]--;
 				}
 			}
 			
-			while (exterminateRepeat[i] > 0) {
+			while (exterminateCopy[i] > 0) {
 				for (int j = 0; j < playerList.size(); j++) {
 					String command = playerList.get(j).getPlanList().get(i).toString();
 					if(command.equals("EXTERMINATE")) {
 						playerTurnOrder.add(j);
 					}
-					exterminateRepeat[i]--;
+					exterminateCopy[i]--;
 				}
 			}
 		}
 		return playerTurnOrder;
+	}
+	
+	public List<Integer> setCommandOrder(int[] expandRepeat, int[] exploreRepeat, int[] exterminateRepeat) {
+		List<Integer> commandOrder = new ArrayList<Integer>();
+		// We need to make a local copy of the arrays to keep them intact
+		int[] expandCopy = expandRepeat.clone();
+		int[] exploreCopy = exploreRepeat.clone();
+		int[] exterminateCopy = exterminateRepeat.clone();
+		
+		// Because we have 3 command cards, we will loop through the players 3 times
+		for (int i = 0; i < 3; i++) {
+			// 0 represents "EXPAND", 1 represents "EXPLORE", 2 represents "EXTERMINATE"
+			while (expandCopy[i] > 0) {
+				commandOrder.add(0);
+				expandCopy[i]--;
+			}
+			
+			while (exploreCopy[i] > 0) {
+				commandOrder.add(1);
+				exploreCopy[i]--;
+			}
+			
+			while (exterminateCopy[i] > 0) {
+				commandOrder.add(2);
+				exterminateCopy[i]--;
+			}
+		}
+		return commandOrder;
 	}
 	
 	public void buildMap() {
