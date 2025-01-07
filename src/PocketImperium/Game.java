@@ -386,13 +386,24 @@ public class Game implements Serializable{
 					hexes.add(hex);
 				}
 				else {
-					// Randomly assign the map different sectors
-					Collections.addAll(hexLevel, 1, 1, 2, 0, 0);
+					// Détermine si le secteur est dans la colonne du milieu
+					boolean isMiddleColumn = (column == map[row].length / 2);
+	
+					// Ajouter les niveaux de systèmes en fonction des règles
+					if (isMiddleColumn) {
+						// Secteurs avec 5 hexagones
+						Collections.addAll(hexLevel, 1, 1, 2, 0, 0);
+					} else {
+						// Secteurs avec 6 hexagones
+						Collections.addAll(hexLevel, 1, 1, 1, 2, 0, 0);
+					}
 					Collections.shuffle(hexLevel);
-					// Sector with 5 hexes
-					for(int i = 0; i < 5; i++) {
+	
+					// Nombre d'hexagones à créer
+					int hexCount = isMiddleColumn ? 5 : 6;
+					for (int i = 0; i < hexCount; i++) {
 						int systemLevel = hexLevel.get(i);
-						Hex hex = new Hex(sectorID, systemLevel); // will assign a random system level
+						Hex hex = new Hex(sectorID, systemLevel);
 						hexes.add(hex);
 					}
 				}
@@ -401,7 +412,6 @@ public class Game implements Serializable{
 				sectorID++;
 			}
 		}
-		
 	}
 	
 	public void displayMap() {
@@ -426,6 +436,85 @@ public class Game implements Serializable{
             }
         }
     }
+
+	public boolean isNeighbor(Hex hex1, Hex hex2, Sector sector) {
+		// Récupérer les hexagones du secteur
+		List<Hex> hexes = sector.getSection();
+		
+		// Vérifier si les deux hex sont dans le même secteur
+		if (!hexes.contains(hex1) || !hexes.contains(hex2)) {
+			return false; // Pas dans le même secteur
+		}
+	
+		// Déterminer la position des hexagones dans le secteur
+		int index1 = hexes.indexOf(hex1);
+		int index2 = hexes.indexOf(hex2);
+	
+		// Vérifier si le secteur est à gauche ou à droite
+		boolean isLeft = sector.getSectorId() % 2 == 0; // Exemple de vérification pour gauche
+		boolean isRight = sector.getSectorId() % 2 != 0; // Exemple pour droite
+	
+		// Liste des voisins par position (indices dans la liste)
+		int[][] neighborMap;
+		int size = hexes.size();
+	
+		if (size == 6) {
+			// Vérifier si le secteur est à gauche ou à droite
+			if (isLeft) {
+				// Configuration pour secteurs à gauche
+				neighborMap = new int[][]{ 
+					{1, 2},       		// Voisins de 0 (Hex 1)
+					{0, 2, 3},    		// Voisins de 1 (Hex 2)
+					{0, 1, 3, 4, 5},	// Voisins de 2 (Hex 3)
+					{1, 2, 5}, 			// Voisins de 3 (Hex 4)
+					{2, 5},    			// Voisins de 4 (Hex 5)
+					{2, 3, 4}        	// Voisins de 5 (Hex 6)
+				};
+			} else {
+				// Configuration pour secteurs à droite
+				neighborMap = new int[][]{ 
+					{1, 2, 3},       		// Voisins de 0 (Hex 1)
+					{0, 3},    		// Voisins de 1 (Hex 2)
+					{0, 3, 4},	// Voisins de 2 (Hex 3)
+					{0, 1, 2, 4, 5}, 			// Voisins de 3 (Hex 4)
+					{2, 3, 5},    			// Voisins de 4 (Hex 5)
+					{3, 4}        	// Voisins de 5 (Hex 6)
+				};
+			}
+		} else if (size == 5) {
+			// Configuration pour 5 hexagones
+			neighborMap = new int[][]{
+				{1, 2},       // Voisins de 0 (Hex 1)
+				{0, 2},    // Voisins de 1 (Hex 2)
+				{0, 1, 3, 4}, // Voisins de 2 (Hex 3)
+				{2, 4},    // Voisins de 3 (Hex 4)
+				{2, 3}        // Voisins de 4 (Hex 5)
+			};
+		} else {
+			throw new IllegalArgumentException("Configuration de secteur non prise en charge.");
+		}
+	
+		// Vérifier si les hexagones sont voisins directs
+		for (int neighbor : neighborMap[index1]) {
+			if (neighbor == index2) {
+				return true; // Voisin direct
+			}
+		}
+	
+		// Vérifier si les hexagones ont un voisin commun
+		for (int neighbor1 : neighborMap[index1]) {
+			for (int neighbor2 : neighborMap[index2]) {
+				if (neighbor1 == neighbor2) {
+					return true; // Partagent un voisin commun
+				}
+			}
+		}
+	
+		// Aucun lien entre les deux hex
+		return false;
+	}
+	
+	
 	
 	public Set<Integer> availableSectors() {
 		Set<Integer> Sectors = new HashSet<Integer>();
