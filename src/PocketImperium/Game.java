@@ -415,6 +415,13 @@ public class Game implements Serializable{
 	}
 	
 	public void displayMap() {
+		System.out.println("Map:");
+		for (Sector[] row : map) {
+            for (Sector sector : row) {
+                System.out.print("Sector " + sector.getSectorId() + "   ");
+            }
+            System.out.println(); // Passe à la ligne suivante
+        }
         for (int row = 0; row < map.length; row++) {
             for (int col = 0; col < map[row].length; col++) {
                 Sector sector = map[row][col];
