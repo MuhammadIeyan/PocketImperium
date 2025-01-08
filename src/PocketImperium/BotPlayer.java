@@ -37,29 +37,27 @@ public class BotPlayer extends Player implements Serializable {
 
         planList.clear(); // Clear previous plans
         switch (strategy) {
-            case AGGRESSIVE -> {
-                // Exemple : Priorité à EXTERMINATE
+            case AGGRESSIVE:
                 planList.add(new CommandCard(CommandCard.Command.EXTERMINATE));
                 planList.add(new CommandCard(CommandCard.Command.EXPAND));
                 planList.add(new CommandCard(CommandCard.Command.EXPLORE));
-                }
-            case DEFENSIVE -> {
-                // Exemple : Priorité à EXPAND et DEFENSE
+                break;
+            case DEFENSIVE:
                 planList.add(new CommandCard(CommandCard.Command.EXPAND));
                 planList.add(new CommandCard(CommandCard.Command.EXPLORE));
                 planList.add(new CommandCard(CommandCard.Command.EXTERMINATE));
-                }
-            case RANDOM -> {
-                // Exemple : Commandes choisies aléatoirement
+                break;
+            case RANDOM:
                 CommandCard.Command[] commands = CommandCard.Command.values();
                 for (int i = 0; i < 3; i++) {
                     int randomIndex = (int) (Math.random() * commands.length);
                     planList.add(new CommandCard(commands[randomIndex]));
                 }
-            }
-        }
+                break;
+        }        
         System.out.println(getName() + " has planned: " + getPlanList());
     }
+
 
     @Override
     public void expand(int shipNumber) {
