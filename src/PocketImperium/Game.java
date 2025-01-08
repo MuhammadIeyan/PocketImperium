@@ -32,6 +32,51 @@ public class Game implements Serializable{
         return sectorList;
     }
 	
+	//public void verifyEnd() {
+		// The game ends after 9 rounds, or at the end of an earlier round if all of one player’s fleets are completely eliminated.
+		// After the game ends, a final scoring is performed as follows:
+		//	• All 9 sectors are scored again — all systems including Tri-Prime score double their value.
+		//	• The player who controls Tri-Prime does not choose an additional sector to score.
+		// Add the points scored by each player during the final scoring to the points scored by them during the game.
+		// The player with the most points is the winner!
+	//}
+
+	public void verifyEnd() {
+		// Vérifier si le jeu a atteint 9 tours ou si un joueur a été éliminé
+		if (turnNumber >= 9 || playerList.stream().anyMatch(player -> player.getFleetSize() == 0)) {
+			isFinished = true; // Marquer le jeu comme terminé
+			System.out.println("The game has ended!");
+	
+			// Calcul des scores finaux
+			Map<Player, Integer> finalScores = new HashMap<>();
+			for (Player player : playerList) {
+				int score = player.getCurrentScore();
+	
+				for (Sector[] row : map) {
+					for (Sector sector : row) {
+						if (sector.getOwner() == player) {
+							for (Hex hex : sector.getHexes()) {
+								score += hex.getSystemLevel() * 2; // Doubler la valeur des systèmes
+							}
+						}
+					}
+				}
+				finalScores.put(player, score);
+				System.out.println(player.getName() + " final score: " + score);
+			}
+	
+			// Déterminer le gagnant
+			Player winner = Collections.max(finalScores.entrySet(), Map.Entry.comparingByValue()).getKey();
+			System.out.println("The winner is " + winner.getName() + " with " + finalScores.get(winner) + " points!");
+	
+			// Marquer le jeu comme terminé
+			return;
+		}
+	
+		// Si aucune condition de fin n'est remplie, le jeu continue
+		System.out.println("The game continues. Turn " + turnNumber + " is in progress.");
+	}
+	
 	
 	public void startGame() {
 		System.out.println("Welcome to Pocket Imperium");

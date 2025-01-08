@@ -90,6 +90,14 @@ public class Sector implements Serializable {
 		}
 		return section.get(hexesID);
 	}
+
+	public Player getOwner() {
+        return this.owner;
+    }
+
+    public List<Hex> getHexes() {
+        return new ArrayList<>(this.section);
+    }
 	
 	
 	

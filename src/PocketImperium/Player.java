@@ -177,4 +177,12 @@ public class Player implements Serializable {
         // Exploiter un secteur pour récolter des points
         System.out.println(name + " execute ses actions ");
     }
+
+    public int getFleetSize() {
+        return fleetList.values().stream().mapToInt(Integer::intValue).sum();
+    }
+
+    public int getCurrentScore() {
+        return points;
+    }
 }
