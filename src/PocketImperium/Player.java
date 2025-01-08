@@ -122,7 +122,7 @@ public class Player implements Serializable {
        
        // Ask the user for the hex, he wants to put the ships on
        Scanner scan = new Scanner(System.in);
-       System.out.println("Please select your sector to place " + shipNumber + " numbers of ships");
+       System.out.println("Please select your sector to place " + shipNumber + " ships");
        int selectedSector = -1;
        int selectedSectorIndex = -1;
        while(sectorID.contains(selectedSector) == false) {
@@ -135,16 +135,22 @@ public class Player implements Serializable {
        // We have the sector now, the user will select the hex next
        Sector sector = this.ownedSector.get(selectedSectorIndex);
        List<Integer> ownedHex = new ArrayList<Integer>();
+       System.out.println("Hexs available :");
        for(int i = 0; i < sector.getSection().size(); i++) {
-    	   if(sector.getSection().get(i).getAvailability() == true) {
-    		   System.out.println("You can place ships on the " + i + " hex.....");
+    	    if(sector.getSection().get(i).getAvailability() == true) {
+    		   System.out.println("Hex " + i);
     		   ownedHex.add(i);
     	   }
        }
        
        int selectedHex = -1;
+       int count = 0;
        while(ownedHex.contains(selectedHex) == false) {
-    	   selectedHex = scan.nextInt();
+            if (count != 0) {
+                System.out.println("Wrong entry, please take another Hex");
+            }
+    	    selectedHex = scan.nextInt();
+            count = count + 1;
        }
        
        // Place the ships on the Hex
