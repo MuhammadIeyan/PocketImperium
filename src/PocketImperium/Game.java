@@ -137,6 +137,8 @@ public class Game implements Serializable{
 		Player currentPlayer;
 	
 		Set<Integer> freeSectorID = availableSectors(); // Keep track of all free Sectors
+		freeSectorID.remove(5); // Exclut le secteur 5 des secteurs disponibles
+
 	
 		// Loop through the players in clockwise direction
 		for (int i = 0; i < playerList.size(); i++) {
