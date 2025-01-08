@@ -328,11 +328,11 @@ public class Game implements Serializable{
 			switch(command) {
 			case 0:
 				System.out.println(currentPlayer.getName() + " will play the command EXPAND.....");
-				currentPlayer.expand(2);
+				this.executeExpand(currentPlayer, 2);
 				break;
 			case 1:
 				System.out.println(currentPlayer.getName() + " will play the command EXPLORE.....");
-				break;
+				this.executeExplore(currentPlayer, 2);
 			case 2:
 				System.out.println(currentPlayer.getName() + " will play the command EXTERMINATE.....");
 				break;
@@ -569,6 +569,10 @@ public class Game implements Serializable{
         List<Sector> map = this.getMap();
         map.get(sectorExplore).getHexes().get(hexExplore).setFleet(shipNumber);
     }
+	
+	public void executeExpand(Player currentPlayer, int shipNumber) {
+		currentPlayer.expand(shipNumber);
+	}
 	
 	public void buildMap() {
 		map = new Sector[3][3]; // Makes the 9 Sector that will be used for the game
