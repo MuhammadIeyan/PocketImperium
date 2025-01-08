@@ -135,12 +135,36 @@ public class Game implements Serializable{
 			
 		// Setup all the players
 		String name;
-		for(int i = 0; i < numberPlayer; i++) {
-			System.out.println("What is the name of the player?");
-			name = scan.nextLine();
-			Player player = new Player(name, color[i]);
-			playerList.add(player);
+		for (int i = 0; i < numberPlayer; i++) {
+			System.out.println("Is this player a bot? (yes/no)");
+			String isBot = scan.nextLine().trim().toLowerCase();
+
+			if (isBot.equals("yes")) {
+				System.out.println("Enter the bot's name:");
+				name = scan.nextLine();
+				System.out.println("Choose the bot's strategy: (AGGRESSIVE, DEFENSIVE, RANDOM)");
+				String strategyInput = scan.nextLine().trim().toUpperCase();
+
+				BotPlayer.Strategy strategy;
+				try {
+					strategy = BotPlayer.Strategy.valueOf(strategyInput);
+				} catch (IllegalArgumentException e) {
+					System.out.println("Invalid strategy. Defaulting to RANDOM.");
+					strategy = BotPlayer.Strategy.RANDOM;
+				}
+
+				BotPlayer botPlayer = new BotPlayer(name, color[i], strategy);
+				playerList.add(botPlayer);
+				System.out.println("Bot player " + name + " with " + strategy + " strategy added.");
+			} else {
+				System.out.println("Enter the player's name:");
+				name = scan.nextLine();
+				Player player = new Player(name, color[i]);
+				playerList.add(player);
+				System.out.println("Human player " + name + " added.");
+			}
 		}
+
 		
 		// Setup the game
 		turnNumber = 0;
@@ -160,12 +184,13 @@ public class Game implements Serializable{
 	
 	public void setupGame() {
 		Player currentPlayer;
+		
 		Set<Integer> freeSectorID = availableSectors(); // Will keep track of all the free Sectors
 		
 		// Loop through the players in clockwise direction
 		for(int i = 0; i < playerList.size(); i++) {
+
 			currentPlayer = playerList.get(i);
-			
 			// Display all the free Sectors
 			for (int row = 0; row < 3; row++) {
 				for (int col = 0; col < 3; col++) {
@@ -573,7 +598,7 @@ public class Game implements Serializable{
 		Set<Integer> Sectors = new HashSet<Integer>();
 		for (int row = 0; row < map.length; row++) {
 			for (int col = 0; col < map[row].length; col++) {
-				map[row][col].displayFreeSector();
+				//map[row][col].displayFreeSector();
 				int sectorID = map[row][col].getFreeSectorID();
 				Sectors.add(sectorID);
 			}
