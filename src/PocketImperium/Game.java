@@ -343,6 +343,7 @@ public class Game implements Serializable{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			verifyEnd();
 		}
 	}
 	
