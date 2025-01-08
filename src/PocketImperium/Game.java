@@ -18,19 +18,6 @@ public class Game implements Serializable{
 	public Game() {
 		this.playerList = new ArrayList<>();
 	}
-
-	public List<Sector> getMap() {
-        List<Sector> sectorList = new ArrayList<>();
-        
-        // Parcourir le tableau bidimensionnel pour ajouter chaque secteur à la liste
-        for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map[i].length; j++) {
-                sectorList.add(map[i][j]); // Ajoute chaque secteur à la liste
-            }
-        }
-        
-        return sectorList;
-    }
 	
 	//public void verifyEnd() {
 		// The game ends after 9 rounds, or at the end of an earlier round if all of one player’s fleets are completely eliminated.
@@ -40,45 +27,9 @@ public class Game implements Serializable{
 		// Add the points scored by each player during the final scoring to the points scored by them during the game.
 		// The player with the most points is the winner!
 	//}
-
-	public void verifyEnd() {
-		// Vérifier si le jeu a atteint 9 tours ou si un joueur a été éliminé
-		if (turnNumber >= 9 || playerList.stream().anyMatch(player -> player.getFleetSize() == 0)) {
-			isFinished = true; // Marquer le jeu comme terminé
-			System.out.println("The game has ended!");
-	
-			// Calcul des scores finaux
-			Map<Player, Integer> finalScores = new HashMap<>();
-			for (Player player : playerList) {
-				int score = player.getCurrentScore();
-	
-				for (Sector[] row : map) {
-					for (Sector sector : row) {
-						if (sector.getOwner() == player) {
-							for (Hex hex : sector.getHexes()) {
-								score += hex.getSystemLevel() * 2; // Doubler la valeur des systèmes
-							}
-						}
-					}
-				}
-				finalScores.put(player, score);
-				System.out.println(player.getName() + " final score: " + score);
-			}
-	
-			// Déterminer le gagnant
-			Player winner = Collections.max(finalScores.entrySet(), Map.Entry.comparingByValue()).getKey();
-			System.out.println("The winner is " + winner.getName() + " with " + finalScores.get(winner) + " points!");
-	
-			// Marquer le jeu comme terminé
-			return;
-		}
-	
-		// Si aucune condition de fin n'est remplie, le jeu continue
-		System.out.println("The game continues. Turn " + turnNumber + " is in progress.");
-	}
-	
 	
 	public void startGame() {
+
 		System.out.println("Welcome to Pocket Imperium");
 		
 		int menu = 0;
@@ -397,6 +348,84 @@ public class Game implements Serializable{
 		verifyEnd();
 	}
 	
+	public void verifyEnd() {
+
+		// Vérifier si le jeu a atteint 9 tours ou si un joueur a été éliminé
+		if (turnNumber >= 9 || playerList.stream().anyMatch(player -> player.getFleetSize() == 0)) {
+			isFinished = true; // Marquer le jeu comme terminé
+			System.out.println("The game has ended!");
+	
+			// Calcul des scores finaux
+			Map<Player, Integer> finalScores = new HashMap<>();
+			for (Player player : playerList) {
+				int score = player.getCurrentScore();
+	
+				for (Sector[] row : map) {
+					for (Sector sector : row) {
+						if (sector.getOwner() == player) {
+							for (Hex hex : sector.getHexes()) {
+								score += hex.getSystemLevel() * 2; // Doubler la valeur des systèmes
+							}
+						}
+					}
+				}
+				finalScores.put(player, score);
+				System.out.println(player.getName() + " final score: " + score);
+			}
+	
+			// Déterminer le gagnant
+			Player winner = Collections.max(finalScores.entrySet(), Map.Entry.comparingByValue()).getKey();
+			System.out.println("The winner is " + winner.getName() + " with " + finalScores.get(winner) + " points!");
+	
+			// Marquer le jeu comme terminé
+			return;
+		}
+	
+		// Si aucune condition de fin n'est remplie, le jeu continue
+		System.out.println("The game continues. Turn " + turnNumber + " is in progress.");
+	}
+	
+	public List<int[]> commandRepeats() {
+		// Check how many times they are being repeated in a turn
+		int[] expandRepeat = new int[3];
+		int[] exploreRepeat = new int[3];
+		int[] exterminateRepeat = new int[3];
+		List<int[]> cardRepeat = new ArrayList<int[]>();
+		
+		// Check the moves selected in order for each player
+		for (int i = 0; i < 3; i++) {
+			Iterator<Player> playerIterator = playerList.iterator();
+			int expandRepeating = 0;
+			int exploreRepeating = 0;
+			int exterminateRepeating = 0;
+			while(playerIterator.hasNext()) {
+				Player currentPlayer = playerIterator.next();
+				String card = currentPlayer.getPlanList().get(i).toString(); // This will get the command chosen by the player
+				switch (card) {
+				case "EXPAND":
+					expandRepeating++;
+					break;
+				case "EXPLORE":
+					exploreRepeating++;
+					break;
+				case "EXTERMINATE":
+					exterminateRepeating++;	
+					break;
+				}
+			}
+			
+			// Add repetitions in an array so we can get the move
+			expandRepeat[i] = expandRepeating;
+			exploreRepeat[i] = exploreRepeating;
+			exterminateRepeat[i] = exterminateRepeating;
+		}
+		
+		// Add all the values in 1 single List
+		cardRepeat.add(expandRepeat);
+		cardRepeat.add(exploreRepeat);
+		cardRepeat.add(exterminateRepeat);
+		return cardRepeat;
+	}
 	
 	public List<Integer> setTurnOrder(int[] expandRepeat, int[] exploreRepeat, int[] exterminateRepeat) {
 		List<Integer> playerTurnOrder = new ArrayList<Integer>();
@@ -468,6 +497,79 @@ public class Game implements Serializable{
 		return commandOrder;
 	}
 	
+	public List<Hex> findNeighbours(Hex hex) {
+
+        // Get the sector ID as well as the sector of the hex
+        int sectorID = hex.getSectorID();
+        Sector hexSector = this.getMap().get(sectorID - 1);
+
+        // Get all the hexes in the same sector
+        List<Hex> neighbours = hexSector.getHexes();
+        int hexID = neighbours.indexOf(hex);
+
+        System.out.println("You are moving from sector No. " + sectorID + " from the Hex + " + hexID);
+        for (int i = 0; i < neighbours.size(); i++) {
+            System.out.println("You can move on the sector No. " + sectorID + " Hex No. " + i);
+        }
+
+        return neighbours;
+    }
+	
+	public void executeExplore(Player currentPlayer, int shipNumber) {
+        System.out.println("You are about to use the Explore command.....");
+        System.out.println("Please select a sector that you control");
+        List<Integer> sectorID = new ArrayList<Integer>();
+        for(int i = 0; i <  currentPlayer.getOwnedSector().size(); i++) {
+           System.out.println("You owns the " + currentPlayer.getOwnedSector().get(i).getSectorId() + " sector");
+           sectorID.add(currentPlayer.getOwnedSector().get(i).getSectorId());
+        }
+
+        // Get the hex he wants to move from
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Please select your sector you want to move your ships from");
+        int selectedSector = -1;
+        int selectedSectorIndex = -1;
+        while(sectorID.contains(selectedSector) == false) {
+            selectedSector = scan.nextInt();
+            if (sectorID.contains(selectedSector)) {
+                selectedSectorIndex = sectorID.indexOf(selectedSector);
+            }
+        }
+
+        // We have the sector now, the user will select the hex next
+        Sector sector = currentPlayer.getOwnedSector().get(selectedSectorIndex);
+        List<Integer> ownedHex = new ArrayList<Integer>();
+
+        System.out.println("Hexs available :");
+        for(int i = 0; i < sector.getSection().size(); i++) {
+             if(sector.getSection().get(i).getAvailability() == true) {
+                System.out.println("Hex " + i);
+                ownedHex.add(i);
+            }
+        }
+
+        int selectedHex = -1;
+        while(ownedHex.contains(selectedHex) == false) {
+            System.out.println("Please select the hex you want to move your ships from: ");
+            selectedHex = scan.nextInt();
+        }
+        // Remove the ships from the hex, and find the neighbours
+        Hex hex = sector.getHexes().get(selectedHex);
+        hex.setFleet(-1 * shipNumber);
+        this.findNeighbours(hex);
+
+        Scanner scan2 = new Scanner(System.in);
+
+        System.out.println("Please select the sector you want to move to: ");
+        int sectorExplore = scan2.nextInt();
+
+        System.out.println("Please select the hex you want to move to: ");
+        int hexExplore = scan2.nextInt();
+
+        List<Sector> map = this.getMap();
+        map.get(sectorExplore).getHexes().get(hexExplore).setFleet(shipNumber);
+    }
+	
 	public void buildMap() {
 		map = new Sector[3][3]; // Makes the 9 Sector that will be used for the game
 		
@@ -511,6 +613,7 @@ public class Game implements Serializable{
 	}
 	
 	public void displayMap() {
+
 		System.out.println("Map:");
 		for (Sector[] row : map) {
             for (Sector sector : row) {
@@ -539,85 +642,19 @@ public class Game implements Serializable{
             }
         }
     }
-
-	public boolean isNeighbor(Hex hex1, Hex hex2, Sector sector) {
-		// Récupérer les hexagones du secteur
-		List<Hex> hexes = sector.getSection();
-		
-		// Vérifier si les deux hex sont dans le même secteur
-		if (!hexes.contains(hex1) || !hexes.contains(hex2)) {
-			return false; // Pas dans le même secteur
-		}
 	
-		// Déterminer la position des hexagones dans le secteur
-		int index1 = hexes.indexOf(hex1);
-		int index2 = hexes.indexOf(hex2);
-	
-		// Vérifier si le secteur est à gauche ou à droite
-		boolean isLeft = sector.getSectorId() % 2 == 0; // Exemple de vérification pour gauche
-		boolean isRight = sector.getSectorId() % 2 != 0; // Exemple pour droite
-	
-		// Liste des voisins par position (indices dans la liste)
-		int[][] neighborMap;
-		int size = hexes.size();
-	
-		if (size == 6) {
-			// Vérifier si le secteur est à gauche ou à droite
-			if (isLeft) {
-				// Configuration pour secteurs à gauche
-				neighborMap = new int[][]{ 
-					{1, 2},       		// Voisins de 0 (Hex 1)
-					{0, 2, 3},    		// Voisins de 1 (Hex 2)
-					{0, 1, 3, 4, 5},	// Voisins de 2 (Hex 3)
-					{1, 2, 5}, 			// Voisins de 3 (Hex 4)
-					{2, 5},    			// Voisins de 4 (Hex 5)
-					{2, 3, 4}        	// Voisins de 5 (Hex 6)
-				};
-			} else {
-				// Configuration pour secteurs à droite
-				neighborMap = new int[][]{ 
-					{1, 2, 3},       		// Voisins de 0 (Hex 1)
-					{0, 3},    		// Voisins de 1 (Hex 2)
-					{0, 3, 4},	// Voisins de 2 (Hex 3)
-					{0, 1, 2, 4, 5}, 			// Voisins de 3 (Hex 4)
-					{2, 3, 5},    			// Voisins de 4 (Hex 5)
-					{3, 4}        	// Voisins de 5 (Hex 6)
-				};
-			}
-		} else if (size == 5) {
-			// Configuration pour 5 hexagones
-			neighborMap = new int[][]{
-				{1, 2},       // Voisins de 0 (Hex 1)
-				{0, 2},    // Voisins de 1 (Hex 2)
-				{0, 1, 3, 4}, // Voisins de 2 (Hex 3)
-				{2, 4},    // Voisins de 3 (Hex 4)
-				{2, 3}        // Voisins de 4 (Hex 5)
-			};
-		} else {
-			throw new IllegalArgumentException("Configuration de secteur non prise en charge.");
-		}
-	
-		// Vérifier si les hexagones sont voisins directs
-		for (int neighbor : neighborMap[index1]) {
-			if (neighbor == index2) {
-				return true; // Voisin direct
-			}
-		}
-	
-		// Vérifier si les hexagones ont un voisin commun
-		for (int neighbor1 : neighborMap[index1]) {
-			for (int neighbor2 : neighborMap[index2]) {
-				if (neighbor1 == neighbor2) {
-					return true; // Partagent un voisin commun
-				}
-			}
-		}
-	
-		// Aucun lien entre les deux hex
-		return false;
-	}
-	
-	
+	public List<Sector> getMap() {
+        List<Sector> sectorList = new ArrayList<>();
+        
+        // Parcourir le tableau bidimensionnel pour ajouter chaque secteur à la liste
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[i].length; j++) {
+                sectorList.add(map[i][j]); // Ajoute chaque secteur à la liste
+            }
+        }
+        
+        return sectorList;
+    }
 	
 	public Set<Integer> availableSectors() {
 		Set<Integer> Sectors = new HashSet<Integer>();
@@ -631,48 +668,6 @@ public class Game implements Serializable{
 		return Sectors;
 	}
 	
-	public List<int[]> commandRepeats() {
-		// Check how many times they are being repeated in a turn
-		int[] expandRepeat = new int[3];
-		int[] exploreRepeat = new int[3];
-		int[] exterminateRepeat = new int[3];
-		List<int[]> cardRepeat = new ArrayList<int[]>();
-		
-		// Check the moves selected in order for each player
-		for (int i = 0; i < 3; i++) {
-			Iterator<Player> playerIterator = playerList.iterator();
-			int expandRepeating = 0;
-			int exploreRepeating = 0;
-			int exterminateRepeating = 0;
-			while(playerIterator.hasNext()) {
-				Player currentPlayer = playerIterator.next();
-				String card = currentPlayer.getPlanList().get(i).toString(); // This will get the command chosen by the player
-				switch (card) {
-				case "EXPAND":
-					expandRepeating++;
-					break;
-				case "EXPLORE":
-					exploreRepeating++;
-					break;
-				case "EXTERMINATE":
-					exterminateRepeating++;	
-					break;
-				}
-			}
-			
-			// Add repetitions in an array so we can get the move
-			expandRepeat[i] = expandRepeating;
-			exploreRepeat[i] = exploreRepeating;
-			exterminateRepeat[i] = exterminateRepeating;
-		}
-		
-		// Add all the values in 1 single List
-		cardRepeat.add(expandRepeat);
-		cardRepeat.add(exploreRepeat);
-		cardRepeat.add(exterminateRepeat);
-		return cardRepeat;
-	}
-
 	public static void saveToObject(Game game, String filename) throws IOException {
 		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
 			oos.writeObject(game);
