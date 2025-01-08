@@ -13,7 +13,7 @@ public class Player implements Serializable {
     private Map<Hex, Integer> fleetList = new HashMap<>(); // Associe un Hex à un nombre de vaisseaux
 	private int ships;
     private int points;
-    private List<CommandCard> planList;
+    protected List<CommandCard> planList;
     private List<Sector> ownedSector;
 
     public Player(String name, String color) {
@@ -191,4 +191,9 @@ public class Player implements Serializable {
     public int getCurrentScore() {
         return points;
     }
+
+    public List<Sector> getOwnedSector() {
+        return this.ownedSector;
+    }
+    
 }

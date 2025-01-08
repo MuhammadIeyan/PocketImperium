@@ -99,6 +99,24 @@ public class Sector implements Serializable {
         return new ArrayList<>(this.section);
     }
 	
+	public int getRandomHexWithLevel(int level) {
+		List<Hex> availableHexes = new ArrayList<>();
 	
+		// Filtrer les hexagones disponibles avec le niveau spécifié
+		for (Hex hex : this.section) {
+			if (hex.getSystemLevel() == level && !hex.getAvailability()) {
+				availableHexes.add(hex);
+			}
+		}
+	
+		// Choisir un hexagone aléatoire parmi les hexagones disponibles
+		if (!availableHexes.isEmpty()) {
+			Random random = new Random();
+			Hex chosenHex = availableHexes.get(random.nextInt(availableHexes.size()));
+			return this.section.indexOf(chosenHex); // Retourne l'indice de l'hexagone choisi
+		}
+	
+		return -1; // Si aucun hexagone n'est disponible avec le niveau spécifié
+	}
 	
 }

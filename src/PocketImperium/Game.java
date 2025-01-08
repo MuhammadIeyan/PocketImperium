@@ -184,111 +184,128 @@ public class Game implements Serializable{
 	
 	public void setupGame() {
 		Player currentPlayer;
-		
-		Set<Integer> freeSectorID = availableSectors(); // Will keep track of all the free Sectors
-		
+	
+		Set<Integer> freeSectorID = availableSectors(); // Keep track of all free Sectors
+	
 		// Loop through the players in clockwise direction
-		for(int i = 0; i < playerList.size(); i++) {
-
+		for (int i = 0; i < playerList.size(); i++) {
 			currentPlayer = playerList.get(i);
+	
 			// Display all the free Sectors
 			for (int row = 0; row < 3; row++) {
 				for (int col = 0; col < 3; col++) {
 					map[row][col].displayFreeSector();
 				}
 			}
-			
-			// Ask the current player to place the initial 2 ships to start the game
+	
 			int sectorID = -1;
-			while(!freeSectorID.contains(sectorID)) {
-				System.out.println(currentPlayer.getName() + " you have " + currentPlayer.getRemainingShips() + 
-						" ships, please place 2 ships on an unoccupied level 1 system in an unoccupied Sector");
+			if (currentPlayer instanceof BotPlayer) {
+				// Logique pour le bot : choisir un secteur libre aléatoire
+				sectorID = freeSectorID.stream().findAny().orElse(-1);
+				System.out.println(currentPlayer.getName() + " (bot) chose sector " + sectorID + ".");
+			} else {
+				// Logique pour un joueur humain
 				Scanner scan = new Scanner(System.in);
-				while(sectorID == -1 || sectorID == 5 || !freeSectorID.contains(sectorID)) {
+				while (!freeSectorID.contains(sectorID)) {
+					System.out.println(currentPlayer.getName() + " you have " + currentPlayer.getRemainingShips() +
+							" ships, please place 2 ships on an unoccupied level 1 system in an unoccupied Sector");
 					System.out.println("Please select the sector you want");
 					sectorID = scan.nextInt();
 				}
 			}
-			
+	
 			// Check which sector it corresponds to the map and set the player as the owner
-			int row = (sectorID-1)/3; // will get a number from 0 to 2
-			int col = (sectorID-1)%3; // will get a number from 0 to 2
-			map[row][col].setOwner(currentPlayer);// Sets the player as the owner of the sector
+			int row = (sectorID - 1) / 3; // will get a number from 0 to 2
+			int col = (sectorID - 1) % 3; // will get a number from 0 to 2
+			map[row][col].setOwner(currentPlayer); // Sets the player as the owner of the sector
 			currentPlayer.setOwner(map[row][col]); // To keep track of all the sectors owned by the player
-			
-			freeSectorID.remove(sectorID); // will delete the sector from the map
-			
+	
+			freeSectorID.remove(sectorID); // Remove the sector from the map
+	
 			// This will display the sections available in the sector
 			map[row][col].availableSection();
-			
-			// This will force the user to only select a level 1 system
+	
 			int systemLevel = 0;
 			int hexesID = -1;
-			while(systemLevel != 1) {
+			if (currentPlayer instanceof BotPlayer) {
+				// Logique pour le bot : choisir un système de niveau 1 aléatoire
+				hexesID = map[row][col].getRandomHexWithLevel(1);
+				System.out.println(currentPlayer.getName() + " (bot) chose hex " + hexesID + ".");
+			} else {
+				// Logique pour un joueur humain
 				Scanner scan = new Scanner(System.in);
-				System.out.println("Please select one sector with a level 1 system");
-				hexesID = scan.nextInt();
-				systemLevel = map[row][col].getSystemLevel(hexesID);
+				while (systemLevel != 1) {
+					System.out.println("Please select one sector with a level 1 system");
+					hexesID = scan.nextInt();
+					systemLevel = map[row][col].getSystemLevel(hexesID);
+				}
 			}
+	
 			map[row][col].expand(hexesID, 2);
-			Hex chosenHex = map[row][col].getHex(hexesID); // Récupère l'hexagone sélectionné
-			chosenHex.setOwner(currentPlayer); // Attribue le propriétaire à l'hexagone
-			currentPlayer.addFleet(chosenHex, 2); // Ajoute la flotte du joueur sur cet hexagone
-
+			Hex chosenHex = map[row][col].getHex(hexesID); // Get the selected hex
+			chosenHex.setOwner(currentPlayer); // Assign ownership to the hex
+			currentPlayer.addFleet(chosenHex, 2); // Add the player's fleet to this hex
+	
 			currentPlayer.placeShips(2);
 		}
-		
-		// Loop through the players in anti clockwise direction
-		for(int i = playerList.size() - 1; i >= 0; i--) {
+	
+		// Repeat the same logic for the anti-clockwise phase
+		for (int i = playerList.size() - 1; i >= 0; i--) {
 			currentPlayer = playerList.get(i);
-			
+	
 			// Display all the free Sectors
 			for (int row = 0; row < 3; row++) {
 				for (int col = 0; col < 3; col++) {
 					map[row][col].displayFreeSector();
 				}
 			}
-			
-			// Ask the current player to place the initial 2 ships to start the game
+	
 			int sectorID = -1;
-			while(!freeSectorID.contains(sectorID)) {
-				System.out.println(currentPlayer.getName() + " you have " + currentPlayer.getRemainingShips() + 
-						" ships, please place 2 ships on an unoccupied level 1 system in an unoccupied Sector");
-				System.out.println("Please select the sector you want");
+			if (currentPlayer instanceof BotPlayer) {
+				sectorID = freeSectorID.stream().findAny().orElse(-1);
+				System.out.println(currentPlayer.getName() + " (bot) chose sector " + sectorID + ".");
+			} else {
 				Scanner scan = new Scanner(System.in);
-				while(sectorID == -1 || sectorID == 5) {
+				while (!freeSectorID.contains(sectorID)) {
+					System.out.println(currentPlayer.getName() + " you have " + currentPlayer.getRemainingShips() +
+							" ships, please place 2 ships on an unoccupied level 1 system in an unoccupied Sector");
+					System.out.println("Please select the sector you want");
 					sectorID = scan.nextInt();
 				}
-				
 			}
-			
-			// Check which sector it corresponds to the map and set the player as the owner
-			int row = (sectorID-1)/3; // will get a number from 0 to 2
-			int col = (sectorID-1)%3; // will get a number from 0 to 2
-			map[row][col].setOwner(currentPlayer); // Sets the player as the owner of the sector
-			currentPlayer.setOwner(map[row][col]); // To keep track of all the sectors owned by the player
-			
-			freeSectorID.remove(sectorID); // will delete the sector from the map
-			
-			// This will display the sections available in the sector
+	
+			int row = (sectorID - 1) / 3;
+			int col = (sectorID - 1) % 3;
+			map[row][col].setOwner(currentPlayer);
+			currentPlayer.setOwner(map[row][col]);
+	
+			freeSectorID.remove(sectorID);
+	
 			map[row][col].availableSection();
-			
-			// This will force the user to only select a level 1 system
+	
 			int systemLevel = 0;
 			int hexesID = -1;
-			while(systemLevel != 1) {
+			if (currentPlayer instanceof BotPlayer) {
+				hexesID = map[row][col].getRandomHexWithLevel(1);
+				System.out.println(currentPlayer.getName() + " (bot) chose hex " + hexesID + ".");
+			} else {
 				Scanner scan = new Scanner(System.in);
-				System.out.println("Please select one sector with a level 1 system");
-				hexesID = scan.nextInt();
-				systemLevel = map[row][col].getSystemLevel(hexesID);
+				while (systemLevel != 1) {
+					System.out.println("Please select one sector with a level 1 system");
+					hexesID = scan.nextInt();
+					systemLevel = map[row][col].getSystemLevel(hexesID);
+				}
 			}
+	
 			map[row][col].expand(hexesID, 2);
-			Hex chosenHex = map[row][col].getHex(hexesID); // Récupère l'hexagone sélectionné
-			chosenHex.setOwner(currentPlayer); // Attribue le propriétaire à l'hexagone
+			Hex chosenHex = map[row][col].getHex(hexesID);
+			chosenHex.setOwner(currentPlayer);
 			currentPlayer.addFleet(chosenHex, 2);
+	
 			currentPlayer.placeShips(2);
 		}
 	}
+	
 	
 	public void startTurn() {
 		System.out.println("Turn starting");
@@ -319,12 +336,20 @@ public class Game implements Serializable{
 		while (playerIterator.hasNext()) {
 			Player currentPlayer = playerIterator.next();
 			currentPlayer.getPlanList().clear();
+			
 			System.out.println(currentPlayer.getName() + ", it's your turn. Preparing actions...");
 			
-			// Appeler la méthode plan() pour que le joueur prépare ses actions
-			currentPlayer.plan();
-			System.out.println("\n"); // Pour sauter une ligne (mieux pour la visibilite en terminale)
+			if (currentPlayer instanceof BotPlayer) {
+				// Bot planning
+				currentPlayer.plan();
+			} else {
+				// Human player planning
+				System.out.println("Please select your actions.");
+				currentPlayer.plan();
+			}
+			System.out.println("\n"); // Saut de ligne pour une meilleure lisibilité
 		}
+		
 	
 		// Vérification des cartes choisies par les joueurs
 		int[] expandRepeat = this.commandRepeats().get(0);
@@ -368,8 +393,8 @@ public class Game implements Serializable{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			verifyEnd();
 		}
+		verifyEnd();
 	}
 	
 	
