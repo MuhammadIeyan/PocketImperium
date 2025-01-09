@@ -103,4 +103,79 @@ public class BotPlayer extends Player implements Serializable {
         selectedSector.expand(hexIndex, shipNumber);
         System.out.println("Bot placed " + shipNumber + " ships on hex " + hexIndex + " in sector " + selectedSector.getSectorId());
     }
+
+    @Override
+    public void explore(int fromSectorID, int fromHexID, int toSectorID, int toHexID, int shipNumber, Sector[][] map) {
+        // Sélectionner un secteur d'origine parmi ceux possédés
+        Random random = new Random();
+        Sector fromSector = null;
+        
+        // Chercher le secteur d'origine dans ownedSector
+        for (Sector sector : this.getOwnedSector()) {
+            if (sector.getSectorId() == fromSectorID) {
+                fromSector = sector;
+                break;
+            }
+        }
+
+        if (fromSector == null) {
+            System.out.println("Invalid source sector. Aborting.");
+            return;
+        }
+
+        // Sélectionner un hex dans ce secteur d'origine
+        List<Hex> availableHexes = new ArrayList<>();
+        for (int i = 0; i < fromSector.getSection().size(); i++) {
+            if (fromSector.getSection().get(i).getAvailability()) {
+                availableHexes.add(fromSector.getSection().get(i));
+            }
+        }
+
+        // Choisir un hex au hasard parmi ceux disponibles
+        if (availableHexes.isEmpty()) {
+            System.out.println("No available hexes in the source sector. Aborting.");
+            return;
+        }
+
+        // Choisir un hex et un nombre de vaisseaux à déplacer
+        Hex fromHex = availableHexes.get(random.nextInt(availableHexes.size()));
+        int fleetToMove = Math.min(fromHex.getFleet(), shipNumber); // Ne pas dépasser le nombre de vaisseaux disponibles
+
+        // Chercher un secteur de destination qui n'est pas contrôlé
+        Sector toSector = null;
+        for (Sector sector : this.getOwnedSector()) {
+            if (sector.getOwner() == null) {  // Si le secteur n'a pas de propriétaire, c'est un secteur libre
+                toSector = sector;
+                break;
+            }
+        }
+
+        if (toSector == null) {
+            System.out.println("No available target sector. Aborting.");
+            return;
+        }
+
+        // Choisir un hex de destination
+        List<Hex> availableTargetHexes = new ArrayList<>();
+        for (int i = 0; i < toSector.getSection().size(); i++) {
+            if (!toSector.getSection().get(i).getAvailability()) {
+                availableTargetHexes.add(toSector.getSection().get(i));
+            }
+        }
+
+        // Choisir un hex de destination au hasard
+        if (availableTargetHexes.isEmpty()) {
+            System.out.println("No available hexes in the target sector. Aborting.");
+            return;
+        }
+
+        Hex toHex = availableTargetHexes.get(random.nextInt(availableTargetHexes.size()));
+
+        // Lancer l'exploration
+        System.out.println("Bot is exploring...");
+        super.explore(fromSector.getSectorId(), fromHex.getSectorID(), toSector.getSectorId(), toHex.getSectorID(), fleetToMove, map);
+        System.out.println("Bot successfully explored and moved " + fleetToMove + " ships.");
+    }
+
+
 }
