@@ -82,6 +82,13 @@ public class Hex implements Serializable {
 		}
 		else {
 			this.fleet = this.fleet - fleetEntering;
+			this.updateOwner();
+		}
+	}
+	
+	public void updateOwner() {
+		if(this.fleet == 0) {
+			this.fleetOwner = null;
 		}
 	}
 }
