@@ -8,6 +8,10 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.*;
 
+import PocketGame.Hex;
+import PocketGame.Player;
+import PocketGame.Sector;
+
 public class Game implements Serializable{
 	private List<Player> playerList;
 	private int turnNumber;
@@ -340,7 +344,8 @@ public class Game implements Serializable{
 				break;
 			case 2:
 				System.out.println(currentPlayer.getName() + " will play the command EXTERMINATE.....");
-				//this.executeExterminate(currentPlayer, 2);
+				this.executeExterminate(currentPlayer, 2);
+				this.displayMap();
 				break;
 			}
 			// Make a small pause in between
@@ -590,16 +595,16 @@ public class Game implements Serializable{
 		List<Integer> playerSectorID = new ArrayList<Integer>();
 		
 		for(int i = 0; i < playerList.size(); i++) {
-			if(i == indexOfPlayer) {
-				continue;
+			if(i != indexOfPlayer) {
+				List<Sector> opponentSectors = playerList.get(i).getOwnedSector();
+				for (int j = 0; j < opponentSectors.size(); j++) {
+					System.out.println("The sector " + opponentSectors.get(j).getSectorId() + " is owned by " + playerList.get(i).getName());
+					
+					playerSectors.add(opponentSectors.get(j));
+					playerSectorID.add(opponentSectors.get(j).getSectorId());
+				}
 			}
-			List<Sector> opponentSectors = playerList.get(indexOfPlayer).getOwnedSector();
-			for (int j = 0; j < opponentSectors.size(); j++) {
-				System.out.println("The sector " + opponentSectors.get(j).getSectorId() + " is owned by " + playerList.get(indexOfPlayer).getName());
 				
-				playerSectors.add(opponentSectors.get(j));
-				playerSectorID.add(opponentSectors.get(j).getSectorId());
-			}	
 		}
 		
 		Scanner scan = new Scanner(System.in);
