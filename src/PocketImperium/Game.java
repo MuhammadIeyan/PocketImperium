@@ -731,35 +731,57 @@ public class Game implements Serializable{
 	}
 	
 	public void displayMap() {
-
 		System.out.println("Map:");
+	
+		// Afficher les IDs des secteurs sur une seule ligne
 		for (Sector[] row : map) {
-            for (Sector sector : row) {
-                System.out.print("Sector " + sector.getSectorId() + "   ");
-            }
-            System.out.println(); // Passe à la ligne suivante
-        }
-        for (int row = 0; row < map.length; row++) {
-            for (int col = 0; col < map[row].length; col++) {
-                Sector sector = map[row][col];
-                System.out.println("Sector ID: " + sector.getSectorId());
-                System.out.println("Hexes:");
-                for (Hex hex : sector.getSection()) {
-					// Affiche les informations de base du hexagone
-					System.out.print("  Hex Level: " + hex.getSystemLevel() + ", Fleet: " + hex.getFleet());
-				
-					// Vérifie si un propriétaire existe et l'affiche
-					if (hex.getOwner() != null) {
-						System.out.print(", Owner: " + hex.getOwner().getName());
+			for (Sector sector : row) {
+				System.out.print("Sector ID: " + sector.getSectorId() + "   			");
+			}
+			System.out.println(); // Passe à la ligne suivante après les IDs des secteurs
+	
+			// Trouver le nombre maximum d'hexagones dans un secteur de la rangée
+			int maxHexCount = 0;
+			for (Sector sector : row) {
+				maxHexCount = Math.max(maxHexCount, sector.getSection().size());
+			}
+	
+			// Afficher les hexagones ligne par ligne
+			for (int hexIndex = 0; hexIndex < maxHexCount; hexIndex++) {
+				for (Sector sector : row) {
+					if (hexIndex < sector.getSection().size()) {
+						Hex hex = sector.getSection().get(hexIndex);
+						// Affiche les informations de l'hexagone
+						System.out.print("  Hex Level: " + hex.getSystemLevel() + ", Fleet: " + hex.getFleet());
+					} else {
+						// Si le secteur a moins d'hexagones que la ligne actuelle, espace vide
+						System.out.print("                        ");
 					}
-				
-					// Passe à la ligne suivante après l'affichage
-					System.out.println();
+					System.out.print("   "); // Espace entre secteurs
 				}
-				
-            }
-        }
-    }
+				System.out.println(); // Passe à la ligne suivante après une rangée d'hexagones
+	
+				// Afficher les propriétaires des hexagones sur une ligne dédiée
+				for (Sector sector : row) {
+					if (hexIndex < sector.getSection().size()) {
+						Hex hex = sector.getSection().get(hexIndex);
+						if (hex.getOwner() != null) {
+							System.out.print("    Owner: " + hex.getOwner().getName());
+						} else {
+							System.out.print("                         "); // Espacement pour alignement
+						}
+					} else {
+						System.out.print("                         "); // Espacement pour alignement
+					}
+					System.out.print("   "); // Espace entre secteurs
+				}
+				System.out.println(); // Passe à la ligne suivante après une rangée de propriétaires
+			}
+	
+			System.out.println(); // Ligne vide entre les groupes de secteurs
+		}
+	}
+	
 	
 	public List<Sector> getMap() {
         List<Sector> sectorList = new ArrayList<>();
