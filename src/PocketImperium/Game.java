@@ -580,6 +580,12 @@ public class Game implements Serializable{
     }
 	
 	public void executeExpand(Player currentPlayer, int shipNumber) {
+		Scanner scan1 = new Scanner(System.in);
+    	while (shipNumber > currentPlayer.getFleetSize()) {
+    		System.out.println("You have " + currentPlayer.getFleetSize() + " left, you don't have enough ships to place.....");
+    		System.out.println("Please select the number of ships that you want to place: ");
+    		shipNumber = scan1.nextInt();
+    	}
 		currentPlayer.expand(shipNumber);
 	}
 	
