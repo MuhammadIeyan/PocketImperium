@@ -324,22 +324,33 @@ public class Game implements Serializable{
 			
 			Player currentPlayer = playerList.get(order);
 			System.out.println(currentPlayer.getName() + " it is your turn now.....");
-			
+			int numberOfRep;
+			int shipNumber;
 			// 0 represents EXPAND, 1 represents EXPLORE & 2 represents EXTERMINATE
 			switch(command) {
 			case 0:
 				System.out.println(currentPlayer.getName() + " will play the command EXPAND.....");
-				this.executeExpand(currentPlayer, 2);
+				numberOfRep = expandRepeat[i/3];
+				shipNumber = this.commandFleetNumber("EXPAND", numberOfRep);
+				
+				this.executeExpand(currentPlayer, shipNumber);
 				this.displayMap();
 				break;
+				
 			case 1:
 				System.out.println(currentPlayer.getName() + " will play the command EXPLORE.....");
-				this.executeExplore(currentPlayer, 2);
+				numberOfRep = exploreRepeat[i/3];
+				shipNumber = this.commandFleetNumber("EXPLORE", numberOfRep);
+				
+				this.executeExplore(currentPlayer, shipNumber);
 				this.displayMap();
 				break;
 			case 2:
 				System.out.println(currentPlayer.getName() + " will play the command EXTERMINATE.....");
-				this.executeExterminate(currentPlayer, 2);
+				numberOfRep = exterminateRepeat[i/3];
+				shipNumber = this.commandFleetNumber("EXTERMINATE", numberOfRep);
+				
+				this.executeExterminate(currentPlayer, shipNumber);
 				this.displayMap();
 				break;
 			}
@@ -389,6 +400,46 @@ public class Game implements Serializable{
 	
 		// Si aucune condition de fin n'est remplie, le jeu continue
 		System.out.println("The game continues. Turn " + turnNumber + " is in progress.");
+	}
+	
+	public int commandFleetNumber(String command, int numberOfRep) {
+		int maxNumberShips = this.commandPower(numberOfRep);
+		int shipNumber = 4;
+		Scanner scan = new Scanner(System.in);
+		switch(command) {
+		case "EXPAND":
+			while(shipNumber > maxNumberShips) {
+				System.out.println("Please select the number of ships you want to place: ");
+				shipNumber = scan.nextInt();
+			}
+			break;
+		case "EXPLORE":
+			while(shipNumber > maxNumberShips) {
+				System.out.println("Please select the number of ships you want to move: ");
+				shipNumber = scan.nextInt();
+			}
+			break;
+		case "EXTERMINATE":
+			while(shipNumber > maxNumberShips) {
+				System.out.println("Please select the number of ships you want to attack with: ");
+				shipNumber = scan.nextInt();
+			}
+			break;
+		}
+		return shipNumber;
+	}
+	
+	public int commandPower(int numberOfRep) {
+		if (numberOfRep == 1) {
+			System.out.println("You can use 3 ships");
+			return 3;
+		}
+		if (numberOfRep == 2) {
+			System.out.println("You can use 2 ships");
+			return 2;
+		}
+		System.out.println("You can use 1 ship only");
+		return 1;
 	}
 	
 	public List<int[]> commandRepeats() {
