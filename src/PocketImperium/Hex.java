@@ -2,7 +2,6 @@ package PocketImperium;
 
 import java.io.Serializable;
 
-import PocketGame.Player;
 
 public class Hex implements Serializable {
 	private int sectorID;
