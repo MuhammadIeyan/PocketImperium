@@ -7,11 +7,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.*;
-
-import PocketGame.Hex;
-import PocketGame.Player;
-import PocketGame.Sector;
-
 public class Game implements Serializable{
 	private List<Player> playerList;
 	private int turnNumber;
