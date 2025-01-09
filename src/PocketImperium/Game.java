@@ -8,7 +8,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.*;
 
-
 public class Game implements Serializable{
 	private List<Player> playerList;
 	private int turnNumber;
@@ -332,13 +331,16 @@ public class Game implements Serializable{
 			case 0:
 				System.out.println(currentPlayer.getName() + " will play the command EXPAND.....");
 				this.executeExpand(currentPlayer, 2);
+				this.displayMap();
 				break;
 			case 1:
 				System.out.println(currentPlayer.getName() + " will play the command EXPLORE.....");
 				this.executeExplore(currentPlayer, 2);
+				this.displayMap();
+				break;
 			case 2:
 				System.out.println(currentPlayer.getName() + " will play the command EXTERMINATE.....");
-				this.executeExterminate(currentPlayer);
+				//this.executeExterminate(currentPlayer, 2);
 				break;
 			}
 			// Make a small pause in between
@@ -569,16 +571,19 @@ public class Game implements Serializable{
 
         System.out.println("Please select the hex you want to move to: ");
         int hexExplore = scan2.nextInt();
+        
+        int targetRow = (sectorExplore - 1) / 3;
+        int targetCol = (sectorExplore - 1) % 3;
+        map[targetRow][targetCol].expand(hexExplore, shipNumber);
+        map[targetRow][targetCol].getHex(hexExplore).setOwner(currentPlayer);
 
-        List<Sector> map = this.getMap();
-        map.get(sectorExplore).getHexes().get(hexExplore).setFleet(shipNumber);
     }
 	
 	public void executeExpand(Player currentPlayer, int shipNumber) {
 		currentPlayer.expand(shipNumber);
 	}
 	
-	public void executeExterminate(Player currentPlayer) {
+	public void executeExterminate(Player currentPlayer, int shipNumber) {
 		int indexOfPlayer = playerList.indexOf(currentPlayer);
 		// Get all the sectors owned by the opponents
 		List<Sector> playerSectors = new ArrayList<Sector>();
@@ -622,7 +627,7 @@ public class Game implements Serializable{
 			targetHex = scan.nextInt();
 		}
 		
-		availableHex.get(targetHex).isAttached(targetHex, currentPlayer);
+		availableHex.get(targetHex).isAttached(shipNumber, currentPlayer);
 		
 	}
 	
