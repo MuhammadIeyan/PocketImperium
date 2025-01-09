@@ -338,6 +338,7 @@ public class Game implements Serializable{
 				this.executeExplore(currentPlayer, 2);
 			case 2:
 				System.out.println(currentPlayer.getName() + " will play the command EXTERMINATE.....");
+				this.executeExterminate(currentPlayer);
 				break;
 			}
 			// Make a small pause in between
