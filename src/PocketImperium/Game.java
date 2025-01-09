@@ -613,62 +613,95 @@ public class Game implements Serializable{
     }
 	
 	public void executeExplore(Player currentPlayer, int shipNumber) {
-        System.out.println("You are about to use the Explore command.....");
-        System.out.println("Please select a sector that you control");
-        List<Integer> sectorID = new ArrayList<Integer>();
-        for(int i = 0; i <  currentPlayer.getOwnedSector().size(); i++) {
-           System.out.println("You owns the " + currentPlayer.getOwnedSector().get(i).getSectorId() + " sector");
-           sectorID.add(currentPlayer.getOwnedSector().get(i).getSectorId());
-        }
-
-        // Get the hex he wants to move from
-        Scanner scan = new Scanner(System.in);
-        System.out.println("Please select your sector you want to move your ships from");
-        int selectedSector = -1;
-        int selectedSectorIndex = -1;
-        while(sectorID.contains(selectedSector) == false) {
-            selectedSector = scan.nextInt();
-            if (sectorID.contains(selectedSector)) {
-                selectedSectorIndex = sectorID.indexOf(selectedSector);
-            }
-        }
-
-        // We have the sector now, the user will select the hex next
-        Sector sector = currentPlayer.getOwnedSector().get(selectedSectorIndex);
-        List<Integer> ownedHex = new ArrayList<Integer>();
-
-        System.out.println("Hexs available :");
-        for(int i = 0; i < sector.getSection().size(); i++) {
-             if(sector.getSection().get(i).getAvailability() == true) {
-                System.out.println("Hex " + i);
-                ownedHex.add(i);
-            }
-        }
-
-        int selectedHex = -1;
-        while(ownedHex.contains(selectedHex) == false) {
-            System.out.println("Please select the hex you want to move your ships from: ");
-            selectedHex = scan.nextInt();
-        }
-        // Remove the ships from the hex, and find the neighbours
-        Hex hex = sector.getHexes().get(selectedHex);
-        hex.setFleet(-1 * shipNumber);
-        this.findNeighbours(hex);
-
-        Scanner scan2 = new Scanner(System.in);
-
-        System.out.println("Please select the sector you want to move to: ");
-        int sectorExplore = scan2.nextInt();
-
-        System.out.println("Please select the hex you want to move to: ");
-        int hexExplore = scan2.nextInt();
-        
-        int targetRow = (sectorExplore - 1) / 3;
-        int targetCol = (sectorExplore - 1) % 3;
-        map[targetRow][targetCol].expand(hexExplore, shipNumber);
-        map[targetRow][targetCol].getHex(hexExplore).setOwner(currentPlayer);
-
-    }
+		System.out.println("You are about to use the Explore command.....");
+		System.out.println("Please select a sector that you control");
+		
+		// Liste des secteurs que le joueur possède
+		List<Integer> sectorID = new ArrayList<>();
+		for (int i = 0; i < currentPlayer.getOwnedSector().size(); i++) {
+			System.out.println("You own sector " + currentPlayer.getOwnedSector().get(i).getSectorId());
+			sectorID.add(currentPlayer.getOwnedSector().get(i).getSectorId());
+		}
+	
+		// Demander à l'utilisateur de sélectionner un secteur valide
+		Scanner scan = new Scanner(System.in);
+		int selectedSector = -1;
+		boolean isValidSector = false;
+		
+		// Tant que le secteur n'est pas valide, on redemande à l'utilisateur
+		while (!isValidSector) {
+			System.out.println("Please select a sector you want to move your ships from: ");
+			selectedSector = scan.nextInt();
+	
+			// Vérifier si le secteur existe dans les secteurs possédés par le joueur
+			isValidSector = sectorID.contains(selectedSector);
+			
+			if (!isValidSector) {
+				System.out.println("Invalid sector ID, please try again.");
+			}
+		}
+	
+		// Trouver le secteur correspondant à l'ID sélectionné
+		int selectedSectorIndex = sectorID.indexOf(selectedSector);
+		Sector sector = currentPlayer.getOwnedSector().get(selectedSectorIndex);
+		
+		// Lister les hexagones disponibles dans le secteur
+		List<Integer> ownedHex = new ArrayList<>();
+		System.out.println("Hexes available:");
+		for (int i = 0; i < sector.getSection().size(); i++) {
+			if (sector.getSection().get(i).getAvailability()) {
+				System.out.println("Hex " + i);
+				ownedHex.add(i);
+			}
+		}
+	
+		// Demander à l'utilisateur de sélectionner un hex valide
+		int selectedHex = -1;
+		boolean isValidHex = false;
+		while (!isValidHex) {
+			System.out.println("Please select the hex you want to move your ships from: ");
+			selectedHex = scan.nextInt();
+			
+			// Vérifier si l'hex est valide
+			isValidHex = ownedHex.contains(selectedHex);
+			
+			if (!isValidHex) {
+				System.out.println("Invalid hex ID, please try again.");
+			}
+		}
+	
+		// Retirer les navires de l'hex sélectionné
+		Hex hex = sector.getSection().get(selectedHex);
+		hex.setFleet(-shipNumber);  // Retirer la flotte de l'hex d'origine
+		hex.setOwner(null);  // Retirer le propriétaire de l'hex d'origine
+		this.findNeighbours(hex);
+	
+		// Demander à l'utilisateur où déplacer les navires
+		System.out.println("Please select the sector you want to move to: ");
+		int sectorExplore = scan.nextInt();
+	
+		System.out.println("Please select the hex you want to move to: ");
+		int hexExplore = scan.nextInt();
+	
+		// Vérification que le secteur d'exploration existe et que l'hex existe dans ce secteur
+		Sector exploreSector = map[(sectorExplore - 1) / 3][(sectorExplore - 1) % 3];
+		if (hexExplore < 0 || hexExplore >= exploreSector.getSection().size()) {
+			System.out.println("Invalid hex ID for the target sector, please select a valid hex.");
+			return;  // Quitter la méthode si l'entrée est invalide
+		}
+	
+		// Calculer la position dans la carte et déplacer les navires
+		int targetRow = (sectorExplore - 1) / 3;
+		int targetCol = (sectorExplore - 1) % 3;
+		map[targetRow][targetCol].expand(hexExplore, shipNumber);
+		
+		// Ajouter le propriétaire à l'hex de destination
+		Hex targetHex = map[targetRow][targetCol].getHex(hexExplore);
+		targetHex.setOwner(currentPlayer);  // Définir le joueur comme propriétaire de l'hex de destination
+		
+		System.out.println("Exploration completed!");
+	}
+			
 	
 	public void executeExpand(Player currentPlayer, int shipNumber) {
 		Scanner scan1 = new Scanner(System.in);
@@ -806,7 +839,7 @@ public class Game implements Serializable{
 					if (hexIndex < sector.getSection().size()) {
 						Hex hex = sector.getSection().get(hexIndex);
 						if (hex.getOwner() != null) {
-							System.out.print("    Owner: " + hex.getOwner().getName());
+							System.out.print("    Owner: " + hex.getOwner().getName() + "     ");
 						} else {
 							System.out.print("                         "); // Espacement pour alignement
 						}

@@ -167,10 +167,57 @@ public class Player implements Serializable {
         System.out.println(name + " attaque les Hex spécifiés.");
     }
 
-    public void explore(int shipNumber, Hex newHex) {
-        // Explorer de nouveaux Hex et y déplacer une flotte
-        addFleet(newHex, shipNumber);
-        System.out.println(name + " explore l'hexagone " + newHex);
+    public void explore(int fromSectorID, int fromHexID, int toSectorID, int toHexID, int shipNumber, Sector[][] map) {
+        // Secteur et hex d'origine
+        Sector fromSector = findOwnedSectorById(fromSectorID);
+        if (fromSector == null) {
+            System.out.println("Invalid source sector. Aborting.");
+            return;
+        }
+    
+        Hex fromHex = fromSector.getHex(fromHexID);
+        if (fromHex == null || fromHex.getFleet() < shipNumber) {
+            System.out.println("Invalid source hex or insufficient ships. Aborting.");
+            return;
+        }
+    
+        // Secteur et hex cible
+        int targetRow = (toSectorID - 1) / 3;
+        int targetCol = (toSectorID - 1) % 3;
+    
+        Sector toSector = map[targetRow][targetCol];
+        if (toSector == null) {
+            System.out.println("Invalid target sector. Aborting.");
+            return;
+        }
+    
+        Hex toHex = toSector.getHex(toHexID);
+        if (toHex == null || toHex.getAvailability()) {
+            System.out.println("Target hex is unavailable. Aborting.");
+            return;
+        }
+    
+        // Déplacer les vaisseaux
+        fromHex.setFleet(fromHex.getFleet() - shipNumber);
+        toHex.setFleet(toHex.getFleet() + shipNumber);
+        toHex.setOwner(this);
+    
+        // Ajouter le secteur cible s'il n'est pas déjà contrôlé
+        if (!this.ownedSector.contains(toSector)) {
+            this.ownedSector.add(toSector);
+        }
+    
+        System.out.println("Successfully moved " + shipNumber + " ships from Sector " + fromSectorID + " Hex " + fromHexID +
+                " to Sector " + toSectorID + " Hex " + toHexID + ".");
+    }
+
+    private Sector findOwnedSectorById(int sectorId) {
+        for (Sector sector : ownedSector) {
+            if (sector.getSectorId() == sectorId) {
+                return sector;
+            }
+        }
+        return null;
     }
 
     public void exploit(int idSector) {
