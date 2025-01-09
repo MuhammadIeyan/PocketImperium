@@ -27,7 +27,7 @@ public class Game implements Serializable{
 		// The player with the most points is the winner!
 	//}
 	
-	public void startGame() {
+	public void startGame() throws InterruptedException {
 
 		System.out.println("Welcome to Pocket Imperium");
 		
@@ -132,7 +132,7 @@ public class Game implements Serializable{
 		
 	}
 	
-	public void setupGame() {
+	public void setupGame() throws InterruptedException {
 		Player currentPlayer;
 	
 		Set<Integer> freeSectorID = availableSectors(); // Keep track of all free Sectors
@@ -153,6 +153,9 @@ public class Game implements Serializable{
 			int sectorID = -1;
 			if (currentPlayer instanceof BotPlayer) {
 				// Logique pour le bot : choisir un secteur libre aléatoire
+				System.out.println(currentPlayer.getName() + " is a bot. He is thinking....");
+				Thread.sleep(1000);
+				
 				sectorID = freeSectorID.stream().findAny().orElse(-1);
 				System.out.println(currentPlayer.getName() + " (bot) chose sector " + sectorID + ".");
 			} else {
@@ -181,6 +184,9 @@ public class Game implements Serializable{
 			int hexesID = -1;
 			if (currentPlayer instanceof BotPlayer) {
 				// Logique pour le bot : choisir un système de niveau 1 aléatoire
+				System.out.println(currentPlayer.getName() + " is thinking....");
+				Thread.sleep(1000);
+				
 				hexesID = map[row][col].getRandomHexWithLevel(1);
 				System.out.println(currentPlayer.getName() + " (bot) chose hex " + hexesID + ".");
 			} else {
@@ -214,6 +220,9 @@ public class Game implements Serializable{
 	
 			int sectorID = -1;
 			if (currentPlayer instanceof BotPlayer) {
+				System.out.println(currentPlayer.getName() + " is thinking....");
+				Thread.sleep(1000);
+				
 				sectorID = freeSectorID.stream().findAny().orElse(-1);
 				System.out.println(currentPlayer.getName() + " (bot) chose sector " + sectorID + ".");
 			} else {
@@ -238,6 +247,8 @@ public class Game implements Serializable{
 			int systemLevel = 0;
 			int hexesID = -1;
 			if (currentPlayer instanceof BotPlayer) {
+				System.out.println(currentPlayer.getName() + " is thinking....");
+				Thread.sleep(1000);
 				hexesID = map[row][col].getRandomHexWithLevel(1);
 				System.out.println(currentPlayer.getName() + " (bot) chose hex " + hexesID + ".");
 			} else {
@@ -259,7 +270,7 @@ public class Game implements Serializable{
 	}
 	
 	
-	public void startTurn() {
+	public void startTurn() throws InterruptedException {
 		System.out.println("Turn starting");
 		
 		// Offrir la possibilité de sauvegarder au début du tour
@@ -293,7 +304,10 @@ public class Game implements Serializable{
 			
 			if (currentPlayer instanceof BotPlayer) {
 				// Bot planning
+				System.out.println(currentPlayer.getName() + " is thinking....");
+				Thread.sleep(2000);
 				currentPlayer.plan();
+				
 			} else {
 				// Human player planning
 				System.out.println("Please select your actions.");
@@ -324,6 +338,11 @@ public class Game implements Serializable{
 			
 			Player currentPlayer = playerList.get(order);
 			System.out.println(currentPlayer.getName() + " it is your turn now.....");
+			
+			if (currentPlayer instanceof BotPlayer) {
+				System.out.println(currentPlayer.getName() + " is a bot. He is thinking....");
+				Thread.sleep(2000);
+			}
 			int numberOfRep;
 			int shipNumber;
 			// 0 represents EXPAND, 1 represents EXPLORE & 2 represents EXTERMINATE
@@ -362,7 +381,28 @@ public class Game implements Serializable{
 				e.printStackTrace();
 			}
 		}
+		endTurn();
 		verifyEnd();
+	}
+	
+	public void endTurn() {
+		// Calcul des scores
+		Map<Player, Integer> Scores = new HashMap<>();
+		for (Player player : playerList) {
+			int score = player.getCurrentScore();
+
+			for (Sector[] row : map) {
+				for (Sector sector : row) {
+					if (sector.getOwner() == player) {
+						for (Hex hex : sector.getHexes()) {
+							score += hex.getSystemLevel() * 2; // Doubler la valeur des systèmes
+						}
+					}
+				}
+			}
+			Scores.put(player, score);
+			System.out.println(player.getName() + " final score: " + score);
+		}
 	}
 	
 	public void verifyEnd() {
@@ -831,7 +871,7 @@ public class Game implements Serializable{
 	
 	
 	// Main function, i.e the entry of our game
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		Game PocketImperium = new Game();
 		PocketImperium.startGame();
 	}
