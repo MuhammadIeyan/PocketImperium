@@ -155,8 +155,11 @@ public class Player implements Serializable {
        
        // Place the ships on the Hex
        sector.getSection().get(selectedHex).setFleet(shipNumber);
+       this.ships = this.ships - shipNumber;
+       
        System.out.println("Hex number " + selectedHex + " has " + 
-    		   				sector.getSection().get(selectedHex).getFleet() + " ships \n");
+                               sector.getSection().get(selectedHex).getFleet() + " ships \n");
+       System.out.println("You have " + this.ships + " remaining.");
     }
 
     public void exterminate(List<Hex> attackHexes, List<Integer> shipNumbers) {
