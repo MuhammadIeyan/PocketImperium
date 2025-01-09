@@ -8,6 +8,10 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.*;
 
+import PocketGame.Hex;
+import PocketGame.Player;
+import PocketGame.Sector;
+
 public class Game implements Serializable{
 	private List<Player> playerList;
 	private int turnNumber;
@@ -574,6 +578,54 @@ public class Game implements Serializable{
 	
 	public void executeExpand(Player currentPlayer, int shipNumber) {
 		currentPlayer.expand(shipNumber);
+	}
+	
+	public void executeExterminate(Player currentPlayer) {
+		int indexOfPlayer = playerList.indexOf(currentPlayer);
+		// Get all the sectors owned by the opponents
+		List<Sector> playerSectors = new ArrayList<Sector>();
+		List<Integer> playerSectorID = new ArrayList<Integer>();
+		
+		for(int i = 0; i < playerList.size(); i++) {
+			if(i == indexOfPlayer) {
+				continue;
+			}
+			List<Sector> opponentSectors = playerList.get(indexOfPlayer).getOwnedSector();
+			for (int j = 0; j < opponentSectors.size(); j++) {
+				System.out.println("The sector " + opponentSectors.get(j).getSectorId() + " is owned by " + playerList.get(indexOfPlayer).getName());
+				
+				playerSectors.add(opponentSectors.get(j));
+				playerSectorID.add(opponentSectors.get(j).getSectorId());
+			}	
+		}
+		
+		Scanner scan = new Scanner(System.in);
+		int targetSectorID = -1;
+		while(playerSectorID.contains(targetSectorID) == false) {
+			System.out.println("Please select the sector you want to attack: ");
+			targetSectorID = scan.nextInt();
+		}
+		
+		int targetSectorIndex = playerSectorID.indexOf(targetSectorID);
+		Sector targetSector = playerSectors.get(targetSectorIndex);
+		List<Hex> availableHex = targetSector.getSection();
+		List<Integer> hexIndexes = new ArrayList<Integer>();
+		
+		for (int i = 0; i < availableHex.size(); i++) {
+			if (availableHex.get(i).getAvailability() == true) {
+				System.out.println("You can attack the " + i + "th Hex of level " + availableHex.get(i).getSystemLevel() );
+				hexIndexes.add(i);
+			}
+		}
+		
+		int targetHex = -1;
+		while(hexIndexes.contains(targetHex) == false) {
+			System.out.println("Please select the Hex you want to attack: ");
+			targetHex = scan.nextInt();
+		}
+		
+		availableHex.get(targetHex).isAttached(targetHex, currentPlayer);
+		
 	}
 	
 	public void buildMap() {

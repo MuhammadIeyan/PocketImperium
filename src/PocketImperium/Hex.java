@@ -2,6 +2,8 @@ package PocketImperium;
 
 import java.io.Serializable;
 
+import PocketGame.Player;
+
 public class Hex implements Serializable {
 	private int sectorID;
 	private int systemLevel;
@@ -73,4 +75,16 @@ public class Hex implements Serializable {
 		}
 		return 0;
 	}
+	
+	public void isAttached(int fleetEntering, Player attacker) {
+		if (this.fleet < fleetEntering) {
+			this.fleet = fleetEntering - this.fleet;
+			this.fleetOwner = attacker;
+		}
+		else {
+			this.fleet = this.fleet - fleetEntering;
+		}
+	}
 }
+
+
