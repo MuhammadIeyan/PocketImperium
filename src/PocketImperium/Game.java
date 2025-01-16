@@ -671,7 +671,7 @@ public class Game implements Serializable{
 			int shipWasted = hex.getFleet() - shipNumber;
 			System.out.println("You are only allowed to move " + hex.getFleet() + " of ships. You have wasted " + shipWasted + " of ships....." );
 			shipNumber = hex.getFleet();
-			hex.setFleet(hex.getFleet());
+			hex.setFleet(-shipNumber);
 		}
 		
 		hex.setFleet(-shipNumber);  // Retirer la flotte de l'hex d'origine
