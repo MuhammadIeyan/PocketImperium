@@ -362,12 +362,14 @@ public class Game implements Serializable{
 			}
 			int numberOfRep;
 			int shipNumber;
+			int maxShipNumber;
 			// 0 represents EXPAND, 1 represents EXPLORE & 2 represents EXTERMINATE
 			switch(command) {
 			case 0:
 				System.out.println(currentPlayer.getName() + " will play the command EXPAND.....");
 				numberOfRep = expandRepeat[i/3];
-				shipNumber = this.commandFleetNumber("EXPAND", numberOfRep);
+				maxShipNumber = this.commandPower(numberOfRep);
+				shipNumber = currentPlayer.commandFleetNumber("EXPAND", numberOfRep, maxShipNumber);
 				
 				this.executeExpand(currentPlayer, shipNumber);
 				this.displayMap();
@@ -376,15 +378,18 @@ public class Game implements Serializable{
 			case 1:
 				System.out.println(currentPlayer.getName() + " will play the command EXPLORE.....");
 				numberOfRep = exploreRepeat[i/3];
-				shipNumber = this.commandFleetNumber("EXPLORE", numberOfRep);
+				maxShipNumber = this.commandPower(numberOfRep);
+				shipNumber = currentPlayer.commandFleetNumber("EXPLORE", numberOfRep, maxShipNumber);
 				
 				this.executeExplore(currentPlayer, shipNumber);
 				this.displayMap();
 				break;
+				
 			case 2:
 				System.out.println(currentPlayer.getName() + " will play the command EXTERMINATE.....");
 				numberOfRep = exterminateRepeat[i/3];
-				shipNumber = this.commandFleetNumber("EXTERMINATE", numberOfRep);
+				maxShipNumber = this.commandPower(numberOfRep);
+				shipNumber = currentPlayer.commandFleetNumber("EXTERMINATE", numberOfRep, maxShipNumber);
 				
 				this.executeExterminate(currentPlayer, shipNumber);
 				this.displayMap();
@@ -457,33 +462,6 @@ public class Game implements Serializable{
 	
 		// Si aucune condition de fin n'est remplie, le jeu continue
 		System.out.println("The game continues. Turn " + turnNumber + " is in progress.");
-	}
-	
-	public int commandFleetNumber(String command, int numberOfRep) {
-		int maxNumberShips = this.commandPower(numberOfRep);
-		int shipNumber = 4;
-		Scanner scan = new Scanner(System.in);
-		switch(command) {
-		case "EXPAND":
-			while(shipNumber > maxNumberShips) {
-				System.out.println("Please select the number of ships you want to place: ");
-				shipNumber = scan.nextInt();
-			}
-			break;
-		case "EXPLORE":
-			while(shipNumber > maxNumberShips) {
-				System.out.println("Please select the number of ships you want to move: ");
-				shipNumber = scan.nextInt();
-			}
-			break;
-		case "EXTERMINATE":
-			while(shipNumber > maxNumberShips) {
-				System.out.println("Please select the number of ships you want to attack with: ");
-				shipNumber = scan.nextInt();
-			}
-			break;
-		}
-		return shipNumber;
 	}
 	
 	public int commandPower(int numberOfRep) {
@@ -689,13 +667,24 @@ public class Game implements Serializable{
 	
 		// Retirer les navires de l'hex sélectionné
 		Hex hex = sector.getSection().get(selectedHex);
+		if (hex.getFleet() - shipNumber < 0) {
+			int shipWasted = hex.getFleet() - shipNumber;
+			System.out.println("You are only allowed to move " + hex.getFleet() + " of ships. You have wasted " + shipWasted + " of ships....." );
+			shipNumber = hex.getFleet();
+			hex.setFleet(hex.getFleet());
+		}
+		
 		hex.setFleet(-shipNumber);  // Retirer la flotte de l'hex d'origine
+		
 		hex.setOwner(null);  // Retirer le propriétaire de l'hex d'origine
 		this.findNeighbours(hex);
 	
 		// Demander à l'utilisateur où déplacer les navires
 		System.out.println("Please select the sector you want to move to: ");
 		int sectorExplore = scan.nextInt();
+		while(sectorExplore != sector.getSectorId()) {
+			sectorExplore = scan.nextInt();
+		}
 	
 		System.out.println("Please select the hex you want to move to: ");
 		int hexExplore = scan.nextInt();

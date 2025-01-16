@@ -246,6 +246,31 @@ public class Player implements Serializable {
         return this.ownedSector;
     }
     
+    public int commandFleetNumber(String command, int numberOfRep, int maxNumberShips) {
+		int shipNumber = 4;
+		Scanner scan = new Scanner(System.in);
+		switch(command) {
+		case "EXPAND":
+			while(shipNumber > maxNumberShips) {
+				System.out.println("Please select the number of ships you want to place: ");
+				shipNumber = scan.nextInt();
+			}
+			break;
+		case "EXPLORE":
+			while(shipNumber > maxNumberShips) {
+				System.out.println("Please select the number of ships you want to move: ");
+				shipNumber = scan.nextInt();
+			}
+			break;
+		case "EXTERMINATE":
+			while(shipNumber > maxNumberShips) {
+				System.out.println("Please select the number of ships you want to attack with: ");
+				shipNumber = scan.nextInt();
+			}
+			break;
+		}
+		return shipNumber;
+	}
     
     
 }
