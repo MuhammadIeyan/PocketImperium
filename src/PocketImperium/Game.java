@@ -672,11 +672,11 @@ public class Game implements Serializable{
 			System.out.println("You are only allowed to move " + hex.getFleet() + " of ships. You have wasted " + shipWasted + " of ships....." );
 			shipNumber = hex.getFleet();
 			hex.setFleet(-shipNumber);
+			hex.setOwner(null);  // Retirer le propriétaire de l'hex d'origine
 		}
 		
 		hex.setFleet(-shipNumber);  // Retirer la flotte de l'hex d'origine
 		
-		hex.setOwner(null);  // Retirer le propriétaire de l'hex d'origine
 		this.findNeighbours(hex);
 	
 		// Demander à l'utilisateur où déplacer les navires
@@ -702,6 +702,7 @@ public class Game implements Serializable{
 		map[targetRow][targetCol].expand(hexExplore, shipNumber);
 		
 		// Ajouter le propriétaire à l'hex de destination
+		map[targetRow][targetCol].setOwner(currentPlayer);
 		Hex targetHex = map[targetRow][targetCol].getHex(hexExplore);
 		targetHex.setOwner(currentPlayer);  // Définir le joueur comme propriétaire de l'hex de destination
 		
