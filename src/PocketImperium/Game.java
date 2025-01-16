@@ -18,15 +18,32 @@ public class Game implements Serializable{
 		this.playerList = new ArrayList<>();
 	}
 	
-	//public void verifyEnd() {
-		// The game ends after 9 rounds, or at the end of an earlier round if all of one player’s fleets are completely eliminated.
-		// After the game ends, a final scoring is performed as follows:
-		//	• All 9 sectors are scored again — all systems including Tri-Prime score double their value.
-		//	• The player who controls Tri-Prime does not choose an additional sector to score.
-		// Add the points scored by each player during the final scoring to the points scored by them during the game.
-		// The player with the most points is the winner!
-	//}
-	
+	/**
+	 * Starts the Pocket Imperium game, allowing the user to set up and play.
+	 * 
+	 * <p>This method initializes the game by offering the user a choice between starting
+	 * a new game or loading a saved game. If a new game is chosen, it prompts the user
+	 * to configure the players (either human or bots), their names, and the strategies
+	 * for bot players. It then builds the game map, displays it, and starts the first turn.
+	 * 
+	 * <p>The game loop runs for a maximum of 10 turns or until the game is marked as finished.
+	 * 
+	 * <p>Steps:
+	 * <ol>
+	 *   <li>Display a menu for the user to choose between "New Game" and "Load Game".</li>
+	 *   <li>If "Load Game" is chosen, load the game state from a file and resume gameplay.</li>
+	 *   <li>If "New Game" is chosen, prompt the user to specify the number of players (maximum 3).</li>
+	 *   <li>For each player, ask if it is a bot or a human:
+	 *       <ul>
+	 *         <li>For bots, request the name and strategy (AGGRESSIVE, DEFENSIVE, or RANDOM).</li>
+	 *         <li>For humans, request the player's name.</li>
+	 *       </ul>
+	 *   </li>
+	 *   <li>Build the game map, initialize the game state, and start the first turn.</li>
+	 *   <li>Run the game for up to 10 turns or until the game is marked as finished.</li>
+	 * </ol>
+	 * 
+	 */
 	public void startGame() throws InterruptedException {
 
 		System.out.println("Welcome to Pocket Imperium");
