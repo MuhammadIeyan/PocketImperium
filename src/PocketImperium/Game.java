@@ -954,6 +954,43 @@ public class Game implements Serializable{
 		}
 	}
 	
+
+	/**
+	* Displays the game map in a structured and readable format.
+	* 
+	* <p>This method prints the map details, including sector IDs, hex information, and 
+	* ownership details for each hex. The map is displayed row by row, with each sector's 
+	* hexagons and their respective details shown below the sector ID.</p>
+	* 
+	* <p>Details displayed include:</p>
+	* <ul>
+	*   <li><strong>Sector IDs:</strong> Displayed as a single row for all sectors.</li>
+	*   <li><strong>Hex details:</strong> Each hexagon's system level and fleet information 
+	*       are shown in rows below the sector ID.</li>
+	*   <li><strong>Ownership:</strong> Displays the owner of each hex (if any) in a dedicated row.</li>
+	* </ul>
+	* 
+	* <p>Empty spaces are added for alignment when sectors have different numbers of hexagons.</p>
+	* 
+	* <p>This method assumes the following structure for the map:</p>
+	* <ul>
+	*   <li>The map is a 2D array of {@code Sector} objects.</li>
+	*   <li>Each sector contains a list of {@code Hex} objects, which store the system level, 
+	*       fleet information, and ownership details.</li>
+	* </ul>
+	* 
+	* <p><strong>Output Example:</strong></p>
+	* <pre>
+	* Map:
+	* Sector ID: 1       Sector ID: 2       Sector ID: 3       
+	*   Hex Level: 1, Fleet: 2              Hex Level: 0, Fleet: 0              Hex Level: 2, Fleet: 1   
+	*     Owner: Player1                      Owner: None                          Owner: Player2         
+	* ...
+	* </pre>
+	* 
+	* @see Sector
+	* @see Hex
+	*/
 	public void displayMap() {
 		System.out.println("Map:");
 	
@@ -1013,7 +1050,7 @@ public class Game implements Serializable{
         // Parcourir le tableau bidimensionnel pour ajouter chaque secteur à la liste
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
-                sectorList.add(map[i][j]); // Ajoute chaque secteur à la liste
+                sectorList.add(map[i][j]); // add each sector to the list
             }
         }
         
