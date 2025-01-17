@@ -502,6 +502,19 @@ public class Game implements Serializable{
 		System.out.println("The game continues. Turn " + turnNumber + " is in progress.");
 	}
 	
+
+	/**
+	* Determines the number of ships a player can use based on the number of identical cards revealed.
+	* 
+	* <p>The number of ships is determined as follows:</p>
+	* <ul>
+	*   <li>If {@code numberOfRep == 1}, the player can use 3 ships.</li>
+	*   <li>If {@code numberOfRep == 2}, the player can use 2 ships.</li>
+	*   <li>Otherwise, the player can use only 1 ship.</li>
+	* </ul>
+	* 
+	* <p>A message displaying the result is shown to the player.</p>
+	 */
 	public int commandPower(int numberOfRep) {
 		if (numberOfRep == 1) {
 			System.out.println("You can use 3 ships");
@@ -515,6 +528,29 @@ public class Game implements Serializable{
 		return 1;
 	}
 	
+
+	/**
+	 * Calculates the number of occurrences of each command card (EXPAND, EXPLORE, EXTERMINATE) 
+	 * selected by players during a turn.
+	 * 
+	 * <p>This method iterates over the players and counts how many times each command card is chosen 
+	 * in each phase of the turn (three phases in total). The results are stored as follows:</p>
+	 * <ul>
+	 *   <li>An array for the "EXPAND" command counts per phase.</li>
+	 *   <li>An array for the "EXPLORE" command counts per phase.</li>
+	 *   <li>An array for the "EXTERMINATE" command counts per phase.</li>
+	 * </ul>
+	 * 
+	 * <p>Each array contains three integers, where each index corresponds to a phase of the turn. 
+	 * These arrays are then added to a list that represents the total counts for all commands.</p>
+	 * 
+	 * @return a list of three integer arrays, each representing the count of a specific command card:
+	 *         <ul>
+	 *           <li>The first array contains the counts for the "EXPAND" command for each phase.</li>
+	 *           <li>The second array contains the counts for the "EXPLORE" command for each phase.</li>
+	 *           <li>The third array contains the counts for the "EXTERMINATE" command for each phase.</li>
+	 *         </ul>
+	 */
 	public List<int[]> commandRepeats() {
 		// Check how many times they are being repeated in a turn
 		int[] expandRepeat = new int[3];
