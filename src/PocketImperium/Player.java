@@ -18,7 +18,7 @@ public class Player implements Serializable {
     
     /**
      * Class that represents a Player. A player is characterized by his name, his color,
-     * the number of ships he has left, and his score. A Player also 
+     * the number of ships he has left, and his score.
      * 
      * */
 
@@ -32,29 +32,40 @@ public class Player implements Serializable {
         this.fleetList = new HashMap<>();
     }
     
-    // Getters and Setters
+    /**
+     * This method returns the Players name.
+     * @return a string: players name
+     */
     public String getName() {
         return name;
     }
 
-    public String getColor() {
-        return color;
-    }
-
+    /**
+     * This method returns the number of ships or fleets the Player has placed as well hexes where the ships are.
+     * @return a Map with the owned hex as the key and the number of ships present on it as the value.
+     */
     public Map<Hex, Integer> getFleetList() {
         return fleetList;
     }
 
+    /**
+     * This method returns the players score in the turn.
+     * @return an integer: the Players' score for the turn.
+     */
     public int getPoints() {
         return points;
     }
-	
+    
+	/**
+	 * This method returns the number of ships remaining at disposal for the Player to place.
+	 * @return an integer: the number of ships in the hand of the Player
+	 */
 	public int getRemainingShips() {
 		return this.ships;
 	}
 
 	/**
-	 * This function allows the player to set any number of ships on a target Hex of his choice.
+	 * This method allows the player add a select number of ships from a target Hex of his choice.
 	 * 
 	 * @param hex: the target Hex that the player wants to add his ships to during any move set.
 	 * @param fleetSize: the number of ships the player wants to place on the specified hex.
@@ -64,7 +75,15 @@ public class Player implements Serializable {
         fleetList.put(hex, fleetList.getOrDefault(hex, 0) + fleetSize);
         this.ships = this.ships - fleetSize;
     }
-    
+    /**
+     * This method allows the player remove a select number of ships from a target Hex of his choice.
+     * <p>
+     * The player selects how many ships he wants to remove from one of his owned Hexes. If the selected 
+     * Hex has less ships than the number requested by the player, than the Hexes ship number becomes 0.
+     * <p>
+     * @param hex: The target Hex the Player wants to remove ships from
+     * @param fleetSize: The number of ships the Player want to remove 
+     */
     public void removeFleet(Hex hex, int fleetSize) {
         // Retire une flotte d'un Hex, ou supprime l'entrée si la flotte tombe à 0
         if (fleetList.containsKey(hex)) {
@@ -79,6 +98,10 @@ public class Player implements Serializable {
         }
     }
     
+    /**
+     * This method sets the Player as the owner of the selected Sector
+     * @param freeSector: The sector that the Player has taken control of.
+     */
     public void setOwner(Sector freeSector) {
     	ownedSector.add(freeSector);
     }
@@ -249,7 +272,17 @@ public class Player implements Serializable {
         return this.ownedSector;
     }
     
-    public int commandFleetNumber(String command, int numberOfRep, int maxNumberShips) {
+    /**
+     * This method returns the number of ships that the Player will use for a given command during a phase
+     * <p>
+     * The Player will be displayed the maximum numbers of ships he can use for the following 
+     * phase, and then asked how many ships he wishes to play for the phase.
+     * <p>
+     * @param command: String representing the command type (Expand - Explore - Exterminate).
+     * @param maxNumberShips: Integer representing the Max number of ships.
+     * @return integer: the number of ships the player will use for a given command.
+     */
+    public int commandFleetNumber(String command, int maxNumberShips) {
 		int shipNumber = 4;
 		Scanner scan = new Scanner(System.in);
 		switch(command) {

@@ -415,7 +415,7 @@ public class Game implements Serializable{
 				System.out.println(currentPlayer.getName() + " will play the command EXPAND.....");
 				numberOfRep = expandRepeat[i/3];
 				maxShipNumber = this.commandPower(numberOfRep);
-				shipNumber = currentPlayer.commandFleetNumber("EXPAND", numberOfRep, maxShipNumber);
+				shipNumber = currentPlayer.commandFleetNumber("EXPAND", maxShipNumber);
 				
 				this.executeExpand(currentPlayer, shipNumber);
 				this.displayMap();
@@ -425,7 +425,7 @@ public class Game implements Serializable{
 				System.out.println(currentPlayer.getName() + " will play the command EXPLORE.....");
 				numberOfRep = exploreRepeat[i/3];
 				maxShipNumber = this.commandPower(numberOfRep);
-				shipNumber = currentPlayer.commandFleetNumber("EXPLORE", numberOfRep, maxShipNumber);
+				shipNumber = currentPlayer.commandFleetNumber("EXPLORE", maxShipNumber);
 				
 				this.executeExplore(currentPlayer, shipNumber);
 				this.displayMap();
@@ -435,7 +435,7 @@ public class Game implements Serializable{
 				System.out.println(currentPlayer.getName() + " will play the command EXTERMINATE.....");
 				numberOfRep = exterminateRepeat[i/3];
 				maxShipNumber = this.commandPower(numberOfRep);
-				shipNumber = currentPlayer.commandFleetNumber("EXTERMINATE", numberOfRep, maxShipNumber);
+				shipNumber = currentPlayer.commandFleetNumber("EXTERMINATE", maxShipNumber);
 				
 				this.executeExterminate(currentPlayer, shipNumber);
 				this.displayMap();
