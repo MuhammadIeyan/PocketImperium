@@ -145,8 +145,15 @@ public class Player implements Serializable {
     }
 
     /**
+     * This method allows the Player to use the Command command
      * 
-     * @param shipNumber
+     * <p>
+     * The list of all the sectors and hexes owned by the player are displayed to 
+     * ask the player which target Hex, he would like to expand on. The players'
+     * total number of ships in hand will then be updated to reflect the Game.
+     * <p>
+     * 
+     * @param shipNumber: the number of ships the Player wishes to expand
      */
     public void expand(int shipNumber) {
     	// Display all the owned sectors
@@ -197,12 +204,16 @@ public class Player implements Serializable {
                                sector.getSection().get(selectedHex).getFleet() + " ships \n");
        System.out.println("You have " + this.ships + " remaining.");
     }
+    
 
-    public void exterminate(List<Hex> attackHexes, List<Integer> shipNumbers) {
-        // Logique pour attaquer les Hex ennemis
-        System.out.println(name + " attaque les Hex spécifiés.");
-    }
-
+    /**
+     * Allows the Player to use the Explore command
+     * <p>
+     * The player is prompted to select one of his owned hexes, i.e the hex the Player wants to 
+     * move from. The neighbor hexes will be then displayed to the Player so that he can use the 
+     * command to move from the previous hex to the new hex.
+     * <p>
+     */
     public void explore(int fromSectorID, int fromHexID, int toSectorID, int toHexID, int shipNumber, Sector[][] map) {
         // Secteur et hex d'origine
         Sector fromSector = findOwnedSectorById(fromSectorID);
@@ -246,7 +257,12 @@ public class Player implements Serializable {
         System.out.println("Successfully moved " + shipNumber + " ships from Sector " + fromSectorID + " Hex " + fromHexID +
                 " to Sector " + toSectorID + " Hex " + toHexID + ".");
     }
-
+    
+    /**
+     * Returns the sector owned by the player based on the sector ID
+     * @param sectorId the owned sectors' ID
+     * @return a sector - a sector that the player owns
+     */
     private Sector findOwnedSectorById(int sectorId) {
         for (Sector sector : ownedSector) {
             if (sector.getSectorId() == sectorId) {
@@ -256,28 +272,34 @@ public class Player implements Serializable {
         return null;
     }
 
-    public void exploit(int idSector) {
-        // Exploiter un secteur pour récolter des points
-        System.out.println(name + " exploite le secteur " + idSector);
-    }
-
+    /**
+     * Returns the list of commands in order selected by the player
+     * @return a list of type CommandCard representing the Player's command list
+     */
     public List<CommandCard> getPlanList() {
         return planList;
     }
 
-    public void performActions() {
-        // Exploiter un secteur pour récolter des points
-        System.out.println(name + " execute ses actions ");
-    }
-
+    /**
+     * Returns the number of fleets the Player possesses
+     * @return an integer representing the number of fleet size the Player possesses
+     */
     public int getFleetSize() {
         return fleetList.values().stream().mapToInt(Integer::intValue).sum();
     }
 
+    /**
+     * Returns the Player's current score
+     * @return an integer representing the score
+     */
     public int getCurrentScore() {
         return points;
     }
 
+    /**
+     * Returns all the sectors that the Player owns
+     * @return a list of sector representing all the sector the player owns
+     */
     public List<Sector> getOwnedSector() {
         return this.ownedSector;
     }
