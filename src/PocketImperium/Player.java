@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * Class that represents a Player. A player is characterized by his name, his color, the number 
+ * of ships he has left, and his score.
+ */
 public class Player implements Serializable {
     private String name;
     private String color;
@@ -17,8 +21,7 @@ public class Player implements Serializable {
     private List<Sector> ownedSector;
     
     /**
-     * Class that represents a Player. A player is characterized by his name, his color,
-     * the number of ships he has left, and his score.
+     * Creates a Player based on his color and his name
      * 
      * */
 
@@ -33,42 +36,42 @@ public class Player implements Serializable {
     }
     
     /**
-     * This method returns the Players name.
-     * @return a string: players name
+     * Gets the Players name.
+     * @return The players name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * This method returns the number of ships or fleets the Player has placed as well hexes where the ships are.
-     * @return a Map with the owned hex as the key and the number of ships present on it as the value.
+     * Gets the number of ships or fleets the Player has placed as well hexes where the ships are.
+     * @return The map with the owned hex as the key and the number of ships present on it as the value.
      */
     public Map<Hex, Integer> getFleetList() {
         return fleetList;
     }
 
     /**
-     * This method returns the players score in the turn.
-     * @return an integer: the Players' score for the turn.
+     * Gets the players score in the turn.
+     * @return An integer: the Players' score for the turn.
      */
     public int getPoints() {
         return points;
     }
     
 	/**
-	 * This method returns the number of ships remaining at disposal for the Player to place.
-	 * @return an integer: the number of ships in the hand of the Player
+	 * Gets the number of ships remaining at disposal for the Player to place.
+	 * @return An integer: the number of ships in the hand of the Player
 	 */
 	public int getRemainingShips() {
 		return this.ships;
 	}
 
 	/**
-	 * This method allows the player add a select number of ships from a target Hex of his choice.
+	 * Add a select number of ships from a target Hex of the player's choice.
 	 * 
-	 * @param hex: the target Hex that the player wants to add his ships to during any move set.
-	 * @param fleetSize: the number of ships the player wants to place on the specified hex.
+	 * @param hex The target Hex that the player wants to add his ships to during any move set.
+	 * @param fleetSize The number of ships the player wants to place on the specified hex.
 	 */
     public void addFleet(Hex hex, int fleetSize) {
         // Ajoute ou met à jour une flotte sur un Hex
@@ -76,13 +79,12 @@ public class Player implements Serializable {
         this.ships = this.ships - fleetSize;
     }
     /**
-     * This method allows the player remove a select number of ships from a target Hex of his choice.
-     * <p>
-     * The player selects how many ships he wants to remove from one of his owned Hexes. If the selected 
-     * Hex has less ships than the number requested by the player, than the Hexes ship number becomes 0.
-     * <p>
-     * @param hex: The target Hex the Player wants to remove ships from
-     * @param fleetSize: The number of ships the Player want to remove 
+     * Remove a select number of ships from a target Hex of the player's choice. The player selects 
+     * how many ships he wants to remove from one of his owned Hexes. If the selected Hex has less 
+     * ships than the number requested by the player, than the Hexes ship number becomes 0.
+     * 
+     * @param hex The target Hex the Player wants to remove ships from
+     * @param fleetSize The number of ships the Player want to remove 
      */
     public void removeFleet(Hex hex, int fleetSize) {
         // Retire une flotte d'un Hex, ou supprime l'entrée si la flotte tombe à 0
@@ -99,17 +101,18 @@ public class Player implements Serializable {
     }
     
     /**
-     * This method sets the Player as the owner of the selected Sector
-     * @param freeSector: The sector that the Player has taken control of.
+     * Sets the Player as the owner of the selected Sector
+     * @param freeSector The sector that the Player has taken control of.
      */
     public void setOwner(Sector freeSector) {
     	ownedSector.add(freeSector);
     }
 
     /**
-     * This method allows the player to plan his move set for the turn
-     * <p> The player will be asked to select their command for the 3 phases of a Turn 
-     * by entering an integer (1: Expand - 2: Explore - 3: Exterminate) <p>
+     * <p>Allows the player to plan his move set for the turn.<p>
+     * 
+     * The player will be asked to select their command for the 3 phases of a turn by entering an 
+     * integer (1: Expand - 2: Explore - 3: Exterminate)
      */
     public void plan() {
         Scanner scanner = new Scanner(System.in);
@@ -143,15 +146,13 @@ public class Player implements Serializable {
     }
 
     /**
-     * This method allows the Player to use the Command command
+     * Allows the Player to use the Command EXPAND.
      * 
-     * <p>
-     * The list of all the sectors and hexes owned by the player are displayed to 
-     * ask the player which target Hex, he would like to expand on. The players'
-     * total number of ships in hand will then be updated to reflect the Game.
-     * <p>
+     * The list of all the sectors and hexes owned by the player are displayed to ask the player which 
+     * target Hex, he would like to expand on. The players' total number of ships in hand will then be 
+     * updated to reflect the Game.
      * 
-     * @param shipNumber: the number of ships the Player wishes to expand
+     * @param shipNumber The number of ships the Player wishes to expand
      */
     public void expand(int shipNumber) {
     	// Display all the owned sectors
@@ -205,12 +206,11 @@ public class Player implements Serializable {
     
 
     /**
-     * Allows the Player to use the Explore command
-     * <p>
-     * The player is prompted to select one of his owned hexes, i.e the hex the Player wants to 
-     * move from. The neighbor hexes will be then displayed to the Player so that he can use the 
-     * command to move from the previous hex to the new hex.
-     * <p>
+     * Allows the Player to use the Explore command.
+     * 
+     * The player is prompted to select one of his owned hexes, i.e the hex the Player wants to move 
+     * from. The neighbor hexes will be then displayed to the Player so that he can use the command 
+     * to move from the previous hex to the new hex.
      */
     public void explore(int fromSectorID, int fromHexID, int toSectorID, int toHexID, int shipNumber, Sector[][] map) {
         // Secteur et hex d'origine
@@ -257,9 +257,10 @@ public class Player implements Serializable {
     }
     
     /**
-     * Returns the sector owned by the player based on the sector ID
-     * @param sectorId the owned sectors' ID
-     * @return a sector - a sector that the player owns
+     * Finds the sector owned by the player based on the sector ID
+     * 
+     * @param sectorId The owned sectors' ID
+     * @return A sector that the player owns
      */
     private Sector findOwnedSectorById(int sectorId) {
         for (Sector sector : ownedSector) {
@@ -271,46 +272,46 @@ public class Player implements Serializable {
     }
 
     /**
-     * Returns the list of commands in order selected by the player
-     * @return a list of type CommandCard representing the Player's command list
+     * Gets the list of commands in order selected by the player
+     * @return A list of type CommandCard representing the Player's command list
      */
     public List<CommandCard> getPlanList() {
         return planList;
     }
 
     /**
-     * Returns the number of fleets the Player possesses
-     * @return an integer representing the number of fleet size the Player possesses
+     * Gets the number of fleets the Player possesses
+     * @return An integer representing the number of fleet size the Player possesses
      */
     public int getFleetSize() {
         return fleetList.values().stream().mapToInt(Integer::intValue).sum();
     }
 
     /**
-     * Returns the Player's current score
-     * @return an integer representing the score
+     * Gets the Player's current score
+     * @return An integer representing the score
      */
     public int getCurrentScore() {
         return points;
     }
 
     /**
-     * Returns all the sectors that the Player owns
-     * @return a list of sector representing all the sector the player owns
+     * Gets all the sectors that the Player owns
+     * @return A list of sector representing all the sector the player owns
      */
     public List<Sector> getOwnedSector() {
         return this.ownedSector;
     }
     
     /**
-     * This method returns the number of ships that the Player will use for a given command during a phase
-     * <p>
-     * The Player will be displayed the maximum numbers of ships he can use for the following 
-     * phase, and then asked how many ships he wishes to play for the phase.
-     * <p>
-     * @param command: String representing the command type (Expand - Explore - Exterminate).
-     * @param maxNumberShips: Integer representing the Max number of ships.
-     * @return integer: the number of ships the player will use for a given command.
+     * This method returns the number of ships that the Player will use for a given command during a phase.
+     * 
+     * The Player will be displayed the maximum numbers of ships he can use for the following phase, and 
+     * then asked how many ships he wishes to play for the phase.
+     * 
+     * @param command String representing the command type (Expand - Explore - Exterminate).
+     * @param maxNumberShips Integer representing the Max number of ships.
+     * @return The number of ships the player will use for a given command.
      */
     public int commandFleetNumber(String command, int maxNumberShips) {
 		int shipNumber = 4;
