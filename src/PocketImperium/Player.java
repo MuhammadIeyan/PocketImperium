@@ -7,6 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * Represents a player in the game. The player is characterized by their name, color,
+ * fleet (ships and their locations), points, and owned sectors. A player can issue commands
+ * to expand, explore, and exterminate.
+ */
 public class Player implements Serializable {
     private String name;
     private String color;
