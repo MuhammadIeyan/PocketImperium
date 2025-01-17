@@ -259,7 +259,6 @@ public class Game implements Serializable{
 			chosenHex.setOwner(currentPlayer); // Assign ownership to the hex
 			currentPlayer.addFleet(chosenHex, 2); // Add the player's fleet to this hex
 	
-			currentPlayer.placeShips(2);
 		}
 	
 		// Repeat the same logic for the anti-clockwise phase
@@ -319,12 +318,21 @@ public class Game implements Serializable{
 			Hex chosenHex = map[row][col].getHex(hexesID);
 			chosenHex.setOwner(currentPlayer);
 			currentPlayer.addFleet(chosenHex, 2);
-	
-			currentPlayer.placeShips(2);
 		}
 	}
 	
-	
+	/**
+	 * This method starts a turn of the Game.
+	 * <p>
+	 * The method starts a new turn of the Game. Players are first prompted if they want to 
+	 * save their game so far, then the turn begins by asking each player in what order he 
+	 * will play his moves. Based on the move set selected, the player turn order will be 
+	 * arranged to follow the rules of the Game where Expand goes first, followed by Explore 
+	 * and then Exterminate. Players will then play their selected moves for each phase.
+	 * <p>
+	 * 
+	 * @throws InterruptedException
+	 */
 	public void startTurn() throws InterruptedException {
 		System.out.println("Turn starting");
 		
@@ -444,7 +452,9 @@ public class Game implements Serializable{
 		endTurn();
 		verifyEnd();
 	}
-	
+	/**
+	 * Calculates the scores of each player to determine who is the Winner at the end.
+	 */
 	public void endTurn() {
 		// Calcul des scores
 		Map<Player, Integer> Scores = new HashMap<>();
@@ -465,6 +475,13 @@ public class Game implements Serializable{
 		}
 	}
 	
+	/**
+	 * Checks if the Game has ended or not.
+	 * <p>
+	 * This method will check if number of turns is more than 9 or if any player doesn't 
+	 * have any ships left, and if he's been eliminated from the game.
+	 * <p>
+	 */
 	public void verifyEnd() {
 
 		// Vérifier si le jeu a atteint 9 tours ou si un joueur a été éliminé
@@ -731,6 +748,21 @@ public class Game implements Serializable{
         return neighbours;
     }
 	
+	/**
+	 * This method allows the current Player to use the Explore command.
+	 * <p>
+	 * This method will first ask the Sector and Hex from which he wants to explore 
+	 * from his list of owned Hexes. It will then count the number of ships present 
+	 * on the Hex and if and determine if the player can move enough ships. If not, 
+	 * then he will move all the ships in the Hex. The method will then prompt the 
+	 * Player to select the Hex he wants to move to by looking at its neighbors based 
+	 * on the rules of game, and then finally place them. The player also becomes the 
+	 * owner of the target Hex.
+	 * <p>
+	 * 
+	 * @param currentPlayer: The target Player who will use the Explore command of the game.
+	 * @param shipNumber: The number of ships the player wishes to explore with.
+	 */
 	public void executeExplore(Player currentPlayer, int shipNumber) {
 		System.out.println("You are about to use the Explore command.....");
 		System.out.println("Please select a sector that you control");
@@ -792,7 +824,7 @@ public class Game implements Serializable{
 		// Retirer les navires de l'hex sélectionné
 		Hex hex = sector.getSection().get(selectedHex);
 		if (hex.getFleet() - shipNumber < 0) {
-			int shipWasted = hex.getFleet() - shipNumber;
+			int shipWasted = shipNumber - hex.getFleet();
 			System.out.println("You are only allowed to move " + hex.getFleet() + " of ships. You have wasted " + shipWasted + " of ships....." );
 			shipNumber = hex.getFleet();
 			hex.setFleet(-shipNumber);
@@ -832,8 +864,18 @@ public class Game implements Serializable{
 		
 		System.out.println("Exploration completed!");
 	}
-			
 	
+	/**
+	 * This method allows the current Player to use the Expand command.
+	 * <p>
+	 * This method ask the player the number of ships he want to place as well as the target hex. 
+	 * In case the player doesn't have enough ships to use the Expand command, he will be asked to 
+	 * place a lower number of ships.
+	 * <p>
+	 * 
+	 * @param currentPlayer: The target Player who will use the Expand command of the game.
+	 * @param shipNumber: The number of ships the player wishes to add on a Hex.
+	 */
 	public void executeExpand(Player currentPlayer, int shipNumber) {
 		Scanner scan1 = new Scanner(System.in);
     	while (shipNumber > currentPlayer.getFleetSize()) {
@@ -844,6 +886,18 @@ public class Game implements Serializable{
 		currentPlayer.expand(shipNumber);
 	}
 	
+	/**
+	 * This method allows the current Player to use the Exterminate Command.
+	 * <p>
+	 * The player is shown all the sectors that the opponent players have. He will be then 
+	 * prompted to select a Sector and a Hex from them to Attack. If the player attacks with 
+	 * more ships than what the target Hex has, then the currentPlayer becomes the owner of 
+	 * that hex.
+	 * <p>
+	 * 
+	 * @param currentPlayer: The target Player who will use the Exterminate command of the game.
+	 * @param shipNumber: The number of ships the player wishes to attack an opponent with.
+	 */
 	public void executeExterminate(Player currentPlayer, int shipNumber) {
 		int indexOfPlayer = playerList.indexOf(currentPlayer);
 		// Get all the sectors owned by the opponents
@@ -1057,6 +1111,10 @@ public class Game implements Serializable{
         return sectorList;
     }
 	
+	/**
+	 * Returns all the unoccupied sectors in the Map of the Game.
+	 * @return a set of all the free sector's ID
+	 */
 	public Set<Integer> availableSectors() {
 		Set<Integer> Sectors = new HashSet<Integer>();
 		for (int row = 0; row < map.length; row++) {

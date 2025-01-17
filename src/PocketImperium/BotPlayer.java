@@ -57,7 +57,6 @@ public class BotPlayer extends Player implements Serializable {
                 }
                 break;
         }        
-        System.out.println(getName() + " has planned: " + getPlanList());
     }
 
 

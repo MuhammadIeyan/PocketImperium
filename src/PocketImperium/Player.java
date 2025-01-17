@@ -15,6 +15,12 @@ public class Player implements Serializable {
     private int points;
     protected List<CommandCard> planList;
     private List<Sector> ownedSector;
+    
+    /**
+     * Class that represents a Player. A player is characterized by his name, his color,
+     * the number of ships he has left, and his score. A Player also 
+     * 
+     * */
 
     public Player(String name, String color) {
         this.name = name;
@@ -26,7 +32,6 @@ public class Player implements Serializable {
         this.fleetList = new HashMap<>();
     }
     
-
     // Getters and Setters
     public String getName() {
         return name;
@@ -43,21 +48,23 @@ public class Player implements Serializable {
     public int getPoints() {
         return points;
     }
-
-	public void placeShips(int shipsPlaced) {
-		this.ships = this.ships - shipsPlaced;
-	}
 	
 	public int getRemainingShips() {
 		return this.ships;
 	}
 
+	/**
+	 * This function allows the player to set any number of ships on a target Hex of his choice.
+	 * 
+	 * @param hex: the target Hex that the player wants to add his ships to during any move set.
+	 * @param fleetSize: the number of ships the player wants to place on the specified hex.
+	 */
     public void addFleet(Hex hex, int fleetSize) {
         // Ajoute ou met à jour une flotte sur un Hex
         fleetList.put(hex, fleetList.getOrDefault(hex, 0) + fleetSize);
-        
+        this.ships = this.ships - fleetSize;
     }
-
+    
     public void removeFleet(Hex hex, int fleetSize) {
         // Retire une flotte d'un Hex, ou supprime l'entrée si la flotte tombe à 0
         if (fleetList.containsKey(hex)) {
@@ -79,11 +86,10 @@ public class Player implements Serializable {
     // Actions
     public void plan() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println(name + " planifie ses actions.");
         
         // Afficher dynamiquement toutes les commandes disponibles dans CommandCard.Command
         CommandCard.Command[] availableCommands = CommandCard.Command.values();
-        System.out.println("Veuillez choisir l'ordre des 3 CommandCards à jouer parmi les suivantes :");
+        System.out.println("Please select the order of your Command cards from the following: ");
         for (int i = 0; i < availableCommands.length; i++) {
             System.out.println((i + 1) + ". " + availableCommands[i]);
         }
@@ -92,14 +98,14 @@ public class Player implements Serializable {
         for (int i = 1; i <= 3; i++) {
             CommandCard.Command chosenCommand = null;
             do {
-                System.out.print("Choisissez la carte #" + i + " (1 à " + availableCommands.length + ") : ");
+                System.out.print("Your " + i + "th card is: (1 until " + availableCommands.length + ") : ");
                 int choice = scanner.nextInt();
                 scanner.nextLine();  // Consommer la ligne restante après nextInt()
     
                 if (choice >= 1 && choice <= availableCommands.length) {
                     chosenCommand = availableCommands[choice - 1]; // Convertit l'entrée utilisateur en Command
                 } else {
-                    System.out.println("Choix invalide. Veuillez entrer un chiffre entre 1 et " + availableCommands.length + ".");
+                    System.out.println("Wrong choice. Please select a number between 1 and " + availableCommands.length + ".");
                 }
             } while (chosenCommand == null); // Continue jusqu'à ce qu'un choix valide soit effectué
     
@@ -107,9 +113,6 @@ public class Player implements Serializable {
             CommandCard card = new CommandCard(chosenCommand);
             planList.add(card); // Ajoute la carte choisie à la liste
         }
-    
-        System.out.println("Planification terminée pour " + name + ".");
-        System.out.println("Ordre choisi : " + planList);
     }
 
     public void expand(int shipNumber) {
