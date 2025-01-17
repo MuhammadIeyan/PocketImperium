@@ -771,96 +771,9 @@ public class Game implements Serializable{
 	* </ul>
 	*/
 	public void executeExplore(Player currentPlayer, int shipNumber) {
-		System.out.println(currentPlayer.getName() + " is about to use the Explore command...");
-	
+		
+		this.moveFrom(currentPlayer, shipNumber);
 		Random random = new Random();
-	
-		// Liste des secteurs possédés par le joueur
-		List<Integer> sectorIDs = new ArrayList<>();
-		for (Sector sector : currentPlayer.getOwnedSector()) {
-			sectorIDs.add(sector.getSectorID());
-		}
-	
-		if (sectorIDs.isEmpty()) {
-			System.out.println("No sectors available to explore from.");
-			return;
-		}
-	
-		Sector sector;
-	
-		if (currentPlayer instanceof BotPlayer) {
-			// Choisir un secteur aléatoire pour le bot
-			int selectedSector = sectorIDs.get(random.nextInt(sectorIDs.size()));
-			// Parcourir les secteurs pour trouver celui avec l'ID correspondant
-			sector = null;
-			for (Sector s : currentPlayer.getOwnedSector()) {
-				if (s.getSectorID() == selectedSector) {
-					sector = s;
-					break; // Arrêter la boucle dès que le secteur est trouvé
-				}
-			}
-			System.out.println("Bot selected sector " + selectedSector);
-		} else {
-			// Demander à l'utilisateur de choisir un secteur
-			Scanner scan = new Scanner(System.in);
-			int selectedSector;
-			do {
-				System.out.println("Please select a sector you want to move your ships from: ");
-				selectedSector = scan.nextInt();
-			} while (!sectorIDs.contains(selectedSector));
-			
-			// Rendre la variable sélectionnée finale
-			final int userSelectedSector = selectedSector;
-
-			// Trouver le secteur correspondant
-			sector = null;
-			for (Sector s : currentPlayer.getOwnedSector()) {
-				if (s.getSectorID() == userSelectedSector) {
-					sector = s;
-					break; // Arrêter la recherche dès que le secteur est trouvé
-				}
-			}
-		}
-	
-		if (sector == null) {
-			System.out.println("Invalid sector. Aborting.");
-			return;
-		}
-	
-		// Lister les hexagones disponibles dans le secteur
-		List<Integer> availableHexes = new ArrayList<>();
-		for (int i = 0; i < sector.getSection().size(); i++) {
-			if (sector.getSection().get(i).getAvailability()) {
-				availableHexes.add(i);
-			}
-		}
-	
-		if (availableHexes.isEmpty()) {
-			System.out.println("No available hexes to explore from.");
-			return;
-		}
-	
-		int selectedHex;
-	
-		if (currentPlayer instanceof BotPlayer) {
-			// Choisir un hex aléatoire pour le bot
-			selectedHex = availableHexes.get(random.nextInt(availableHexes.size()));
-			System.out.println("Bot selected hex " + selectedHex);
-		} else {
-			// Demander à l'utilisateur de choisir un hex
-			Scanner scan = new Scanner(System.in);
-			do {
-				System.out.println("Please select the hex you want to move your ships from: ");
-				selectedHex = scan.nextInt();
-			} while (!availableHexes.contains(selectedHex));
-		}
-	
-		Hex hex = sector.getSection().get(selectedHex);
-		if (hex.getFleet() - shipNumber < 0) {
-			shipNumber = hex.getFleet(); // Ajuster le nombre de vaisseaux
-			System.out.println("Not enough ships. Moving " + shipNumber + " ships instead.");
-		}
-		hex.setFleet(-shipNumber);
 	
 		// Sélectionner une destination
 		int targetSectorID;
@@ -939,6 +852,8 @@ public class Game implements Serializable{
 	public void executeExterminate(Player currentPlayer, int shipNumber) {
 		System.out.println(currentPlayer.getName() + " is about to use the Exterminate command...");
 	
+		this.moveFrom(currentPlayer, shipNumber);
+		
 		Random random = new Random();
 		int indexOfPlayer = playerList.indexOf(currentPlayer);
 	
@@ -1033,6 +948,99 @@ public class Game implements Serializable{
 		targetHex.isAttached(shipNumber, currentPlayer);
 	
 		System.out.println(currentPlayer.getName() + " successfully attacked Hex " + targetHexIndex + " in sector " + targetSectorID + ".");
+	}
+	
+	public void moveFrom(Player currentPlayer, int shipNumber) {
+		System.out.println(currentPlayer.getName() + " is about to use the Explore command...");
+		
+		Random random = new Random();
+	
+		// Liste des secteurs possédés par le joueur
+		List<Integer> sectorIDs = new ArrayList<>();
+		for (Sector sector : currentPlayer.getOwnedSector()) {
+			sectorIDs.add(sector.getSectorID());
+		}
+	
+		if (sectorIDs.isEmpty()) {
+			System.out.println("No sectors available to explore from.");
+			return;
+		}
+	
+		Sector sector;
+	
+		if (currentPlayer instanceof BotPlayer) {
+			// Choisir un secteur aléatoire pour le bot
+			int selectedSector = sectorIDs.get(random.nextInt(sectorIDs.size()));
+			// Parcourir les secteurs pour trouver celui avec l'ID correspondant
+			sector = null;
+			for (Sector s : currentPlayer.getOwnedSector()) {
+				if (s.getSectorID() == selectedSector) {
+					sector = s;
+					break; // Arrêter la boucle dès que le secteur est trouvé
+				}
+			}
+			System.out.println("Bot selected sector " + selectedSector);
+		} else {
+			// Demander à l'utilisateur de choisir un secteur
+			Scanner scan = new Scanner(System.in);
+			int selectedSector;
+			do {
+				System.out.println("Please select a sector you want to move your ships from: ");
+				selectedSector = scan.nextInt();
+			} while (!sectorIDs.contains(selectedSector));
+			
+			// Rendre la variable sélectionnée finale
+			final int userSelectedSector = selectedSector;
+
+			// Trouver le secteur correspondant
+			sector = null;
+			for (Sector s : currentPlayer.getOwnedSector()) {
+				if (s.getSectorID() == userSelectedSector) {
+					sector = s;
+					break; // Arrêter la recherche dès que le secteur est trouvé
+				}
+			}
+		}
+	
+		if (sector == null) {
+			System.out.println("Invalid sector. Aborting.");
+			return;
+		}
+	
+		// Lister les hexagones disponibles dans le secteur
+		List<Integer> availableHexes = new ArrayList<>();
+		for (int i = 0; i < sector.getSection().size(); i++) {
+			if (sector.getSection().get(i).getAvailability()) {
+				availableHexes.add(i);
+			}
+		}
+	
+		if (availableHexes.isEmpty()) {
+			System.out.println("No available hexes to explore from.");
+			return;
+		}
+	
+		int selectedHex;
+	
+		if (currentPlayer instanceof BotPlayer) {
+			// Choisir un hex aléatoire pour le bot
+			selectedHex = availableHexes.get(random.nextInt(availableHexes.size()));
+			System.out.println("Bot selected hex " + selectedHex);
+		} else {
+			// Demander à l'utilisateur de choisir un hex
+			Scanner scan = new Scanner(System.in);
+			do {
+				System.out.println("Please select the hex you want to move your ships from: ");
+				selectedHex = scan.nextInt();
+			} while (!availableHexes.contains(selectedHex));
+		}
+	
+		Hex hex = sector.getSection().get(selectedHex);
+		if (hex.getFleet() - shipNumber < 0) {
+			shipNumber = hex.getFleet(); // Ajuster le nombre de vaisseaux
+			System.out.println("Not enough ships. Moving " + shipNumber + " ships instead.");
+		}
+		hex.setFleet(-shipNumber);
 	}
 	
 
