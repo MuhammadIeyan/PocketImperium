@@ -7,6 +7,24 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.*;
+
+
+/**
+ * Represents the main game logic and state for the Pocket Imperium game.
+ * <p>
+ * This class manages the game by handling the list of players, the game map, and the turn sequence.
+ * It also tracks whether the game is finished and provides mechanisms for managing player actions,
+ * including movement, exploration, and sector management.
+ * </p>
+ * <p>
+ * The game uses a two-dimensional array of sectors to represent the map, with each sector containing 
+ * multiple hexagons. Players interact with these sectors by selecting and moving ships or attacking 
+ * enemy sectors. The game also includes functionality to save and load game data to and from files.
+ * </p>
+ *
+ * @see Player
+ * @see Sector
+ */
 public class Game implements Serializable{
 	private List<Player> playerList;
 	private int turnNumber;
@@ -336,7 +354,7 @@ public class Game implements Serializable{
 	public void startTurn() throws InterruptedException {
 		System.out.println("Turn starting");
 		
-		// Offrir la possibilité de sauvegarder au début du tour
+		// Offer the option to save at the start of the turn
 		System.out.println("Press 'q' to save the game or any other key to start the turn.");
 		Scanner scan = new Scanner(System.in);
 		String input = scan.nextLine();
@@ -356,7 +374,7 @@ public class Game implements Serializable{
 			}
 		}
 	
-		// Initialiser l'itérateur des joueurs et lancer le tour
+		// Initialize the player iterator and start the turn
 		Iterator<Player> playerIterator = playerList.iterator();
 	
 		while (playerIterator.hasNext()) {
@@ -376,11 +394,11 @@ public class Game implements Serializable{
 				System.out.println("Please select your actions.");
 				currentPlayer.plan();
 			}
-			System.out.println("\n"); // Saut de ligne pour une meilleure lisibilité
+			System.out.println("\n");
 		}
 		
 	
-		// Vérification des cartes choisies par les joueurs
+		// Check the cards chosen by the players
 		int[] expandRepeat = this.commandRepeats().get(0);
 		int[] exploreRepeat = this.commandRepeats().get(1);
 		int[] exterminateRepeat = this.commandRepeats().get(2);
@@ -455,7 +473,7 @@ public class Game implements Serializable{
 	 * Calculates the scores of each player to determine who is the Winner at the end.
 	 */
 	public void endTurn() {
-		// Calcul des scores
+		// Calculate the scores
 		Map<Player, Integer> Scores = new HashMap<>();
 		for (Player player : playerList) {
 			int score = player.getCurrentScore();
@@ -464,7 +482,7 @@ public class Game implements Serializable{
 				for (Sector sector : row) {
 					if (sector.getOwner() == player) {
 						for (Hex hex : sector.getHexes()) {
-							score += hex.getSystemLevel() * 2; // Doubler la valeur des systèmes
+							score += hex.getSystemLevel() * 2; // Double the value of the systems
 						}
 					}
 				}
@@ -483,12 +501,12 @@ public class Game implements Serializable{
 	 */
 	public void verifyEnd() {
 
-		// Vérifier si le jeu a atteint 9 tours ou si un joueur a été éliminé
+		// Check if the game has reached 9 turns or if a player has been eliminated
 		if (turnNumber >= 9 || playerList.stream().anyMatch(player -> player.getFleetSize() == 0)) {
-			isFinished = true; // Marquer le jeu comme terminé
+			isFinished = true; // Mark the game as finished
 			System.out.println("The game has ended!");
 	
-			// Calcul des scores finaux
+			// Calculate the final scores
 			Map<Player, Integer> finalScores = new HashMap<>();
 			for (Player player : playerList) {
 				int score = player.getCurrentScore();
@@ -497,7 +515,7 @@ public class Game implements Serializable{
 					for (Sector sector : row) {
 						if (sector.getOwner() == player) {
 							for (Hex hex : sector.getHexes()) {
-								score += hex.getSystemLevel() * 2; // Doubler la valeur des systèmes
+								score += hex.getSystemLevel() * 2; // Double the value of the systems
 							}
 						}
 					}
@@ -506,15 +524,15 @@ public class Game implements Serializable{
 				System.out.println(player.getName() + " final score: " + score);
 			}
 	
-			// Déterminer le gagnant
+			// Determine the winner
 			Player winner = Collections.max(finalScores.entrySet(), Map.Entry.comparingByValue()).getKey();
 			System.out.println("The winner is " + winner.getName() + " with " + finalScores.get(winner) + " points!");
 	
-			// Marquer le jeu comme terminé
+			// Mark the game as finished
 			return;
 		}
 	
-		// Si aucune condition de fin n'est remplie, le jeu continue
+		// If no end condition is met, the game continues
 		System.out.println("The game continues. Turn " + turnNumber + " is in progress.");
 	}
 	
@@ -775,17 +793,17 @@ public class Game implements Serializable{
 		this.moveFrom(currentPlayer, shipNumber);
 		Random random = new Random();
 	
-		// Sélectionner une destination
+		// Select a destination
 		int targetSectorID;
 		int targetHexID;
 	
 		if (currentPlayer instanceof BotPlayer) {
-			// Sélectionner un secteur et un hexagone aléatoires pour le bot
-			targetSectorID = random.nextInt(9) + 1; // Supposons que l'ID des secteurs est entre 1 et 9
-			targetHexID = random.nextInt(6); // Supposons qu'il y a 6 hexagones par secteur
+			// Select a random sector and hexagon for the bot
+			targetSectorID = random.nextInt(9) + 1; // Assume that sector IDs are between 1 and 9
+			targetHexID = random.nextInt(6); // Assume there are 6 hexagons per sector
 			System.out.println("Bot exploring to sector " + targetSectorID + " and hex " + targetHexID);
 		} else {
-			// Demander à l'utilisateur de choisir une destination
+			// Ask the user to choose a destination
 			Scanner scan = new Scanner(System.in);
 			System.out.println("Please select the sector you want to move to: ");
 			targetSectorID = scan.nextInt();
@@ -793,7 +811,7 @@ public class Game implements Serializable{
 			targetHexID = scan.nextInt();
 		}
 	
-		// Vérifier et exécuter l'exploration
+		// Verify and execute the exploration
 		Sector targetSector = map[(targetSectorID - 1) / 3][(targetSectorID - 1) % 3];
 		if (targetSector == null || targetHexID < 0 || targetHexID >= targetSector.getSection().size()) {
 			System.out.println("Invalid destination. Exploration aborted.");
@@ -857,7 +875,7 @@ public class Game implements Serializable{
 		Random random = new Random();
 		int indexOfPlayer = playerList.indexOf(currentPlayer);
 	
-		// Liste des secteurs possédés par les adversaires
+		// List of sectors owned by opponents
 		List<Sector> playerSectors = new ArrayList<>();
 		List<Integer> playerSectorIDs = new ArrayList<>();
 	
@@ -877,11 +895,11 @@ public class Game implements Serializable{
 			return;
 		}
 	
-		final int targetSectorID; // Déclaration finale
-		final Sector targetSector; // Déclaration finale
+		final int targetSectorID;
+		final Sector targetSector;
 	
 		if (currentPlayer instanceof BotPlayer) {
-			// Sélection aléatoire d'un secteur pour le bot
+			// Randomly select a sector for the bot
 			targetSectorID = playerSectorIDs.get(random.nextInt(playerSectorIDs.size()));
 			targetSector = playerSectors.stream()
 					.filter(sector -> sector.getSectorID() == targetSectorID)
@@ -889,7 +907,7 @@ public class Game implements Serializable{
 					.orElse(null);
 			System.out.println("Bot selected sector " + targetSectorID + " to attack.");
 		} else {
-			// Demande à l'utilisateur de choisir un secteur
+			// Ask the user to choose a sector
 			Scanner scan = new Scanner(System.in);
 			int userSelectedSectorID = -1;
 			do {
@@ -897,7 +915,7 @@ public class Game implements Serializable{
 				userSelectedSectorID = scan.nextInt();
 			} while (!playerSectorIDs.contains(userSelectedSectorID));
 	
-			targetSectorID = userSelectedSectorID; // Affectation à la variable finale
+			targetSectorID = userSelectedSectorID;
 			targetSector = playerSectors.stream()
 					.filter(sector -> sector.getSectorID() == targetSectorID)
 					.findFirst()
@@ -909,7 +927,7 @@ public class Game implements Serializable{
 			return;
 		}
 	
-		// Hexagones disponibles dans le secteur cible
+		// Available hexagons in the target sector
 		List<Hex> availableHexes = targetSector.getSection();
 		List<Integer> hexIndexes = new ArrayList<>();
 	
@@ -925,14 +943,14 @@ public class Game implements Serializable{
 			return;
 		}
 	
-		final int targetHexIndex; // Déclaration finale
+		final int targetHexIndex;
 	
 		if (currentPlayer instanceof BotPlayer) {
-			// Sélection aléatoire d'un hex pour le bot
+			// Randomly select a hex for the bot
 			targetHexIndex = hexIndexes.get(random.nextInt(hexIndexes.size()));
 			System.out.println("Bot selected hex " + targetHexIndex + " to attack.");
 		} else {
-			// Demande à l'utilisateur de choisir un hex
+			// Ask the user to choose a hex
 			Scanner scan = new Scanner(System.in);
 			int userSelectedHexIndex = -1;
 			do {
@@ -940,21 +958,34 @@ public class Game implements Serializable{
 				userSelectedHexIndex = scan.nextInt();
 			} while (!hexIndexes.contains(userSelectedHexIndex));
 	
-			targetHexIndex = userSelectedHexIndex; // Affectation à la variable finale
+			targetHexIndex = userSelectedHexIndex;
 		}
 	
-		// Attaque du hex sélectionné
+		// Attack the selected hex
 		Hex targetHex = availableHexes.get(targetHexIndex);
 		targetHex.isAttached(shipNumber, currentPlayer);
 	
 		System.out.println(currentPlayer.getName() + " successfully attacked Hex " + targetHexIndex + " in sector " + targetSectorID + ".");
 	}
 	
+	/**
+	 * Allows the player to move ships from a sector and hex, either through user input or randomly for a bot player.
+	 * <p>
+	 * The method first prompts the player (or selects randomly for a bot) to choose a sector they own. Then, it allows the 
+	 * player (or bot) to choose an available hex within the selected sector. The method verifies if the selected sector and hex 
+	 * are valid and ensures that the number of ships being moved is not greater than the available fleet. Finally, it updates 
+	 * the fleet count of the selected hex accordingly.
+	 * </p>
+	 *
+	 * @param currentPlayer The player whose ships are being moved. Can be a human player or a bot.
+	 * @param shipNumber The number of ships the player wants to move.
+	 * @throws IllegalArgumentException If the selected sector or hex is invalid.
+	 */
 	public void moveFrom(Player currentPlayer, int shipNumber) {
 		
 		Random random = new Random();
 	
-		// Liste des secteurs possédés par le joueur
+		// Attack the selected hex
 		List<Integer> sectorIDs = new ArrayList<>();
 		for (Sector sector : currentPlayer.getOwnedSector()) {
 			sectorIDs.add(sector.getSectorID());
@@ -968,19 +999,19 @@ public class Game implements Serializable{
 		Sector sector;
 	
 		if (currentPlayer instanceof BotPlayer) {
-			// Choisir un secteur aléatoire pour le bot
+			// Randomly select a sector for the bot
 			int selectedSector = sectorIDs.get(random.nextInt(sectorIDs.size()));
-			// Parcourir les secteurs pour trouver celui avec l'ID correspondant
+			// Loop through the sectors to find the one with the matching ID
 			sector = null;
 			for (Sector s : currentPlayer.getOwnedSector()) {
 				if (s.getSectorID() == selectedSector) {
 					sector = s;
-					break; // Arrêter la boucle dès que le secteur est trouvé
+					break; // Stop the loop as soon as the sector is found
 				}
 			}
 			System.out.println("Bot selected sector " + selectedSector);
 		} else {
-			// Demander à l'utilisateur de choisir un secteur
+			// Ask the user to choose a sector
 			Scanner scan = new Scanner(System.in);
 			int selectedSector;
 			do {
@@ -988,15 +1019,15 @@ public class Game implements Serializable{
 				selectedSector = scan.nextInt();
 			} while (!sectorIDs.contains(selectedSector));
 			
-			// Rendre la variable sélectionnée finale
+			// Make the selected variable final
 			final int userSelectedSector = selectedSector;
 
-			// Trouver le secteur correspondant
+			// Find the corresponding sector
 			sector = null;
 			for (Sector s : currentPlayer.getOwnedSector()) {
 				if (s.getSectorID() == userSelectedSector) {
 					sector = s;
-					break; // Arrêter la recherche dès que le secteur est trouvé
+					break; // Stop the search as soon as the sector is found
 				}
 			}
 		}
@@ -1006,7 +1037,7 @@ public class Game implements Serializable{
 			return;
 		}
 	
-		// Lister les hexagones disponibles dans le secteur
+		// List the available hexes in the sector
 		List<Integer> availableHexes = new ArrayList<>();
 		for (int i = 0; i < sector.getSection().size(); i++) {
 			if (sector.getSection().get(i).getAvailability()) {
@@ -1022,11 +1053,11 @@ public class Game implements Serializable{
 		int selectedHex;
 	
 		if (currentPlayer instanceof BotPlayer) {
-			// Choisir un hex aléatoire pour le bot
+			// Randomly select a hex for the bot
 			selectedHex = availableHexes.get(random.nextInt(availableHexes.size()));
 			System.out.println("Bot selected hex " + selectedHex);
 		} else {
-			// Demander à l'utilisateur de choisir un hex
+			// Ask the user to choose a hex
 			Scanner scan = new Scanner(System.in);
 			do {
 				System.out.println("Please select the hex you want to move your ships from: ");
@@ -1036,7 +1067,7 @@ public class Game implements Serializable{
 	
 		Hex hex = sector.getSection().get(selectedHex);
 		if (hex.getFleet() - shipNumber < 0) {
-			shipNumber = hex.getFleet(); // Ajuster le nombre de vaisseaux
+			shipNumber = hex.getFleet(); // Adjust the number of ships
 			System.out.println("Not enough ships. Moving " + shipNumber + " ships instead.");
 		}
 		hex.setFleet(-shipNumber);
@@ -1076,20 +1107,20 @@ public class Game implements Serializable{
 					hexes.add(hex);
 				}
 				else {
-					// Détermine si le secteur est dans la colonne du milieu
+					// Determine if the sector is in the middle column
 					boolean isMiddleColumn = (column == map[row].length / 2);
 	
-					// Ajouter les niveaux de systèmes en fonction des règles
+					// Add system levels based on the rules
 					if (isMiddleColumn) {
-						// Secteurs avec 5 hexagones
+						// Sectors with 5 hexagons
 						Collections.addAll(hexLevel, 1, 1, 2, 0, 0);
 					} else {
-						// Secteurs avec 6 hexagones
+						// Sectors with 6 hexagons
 						Collections.addAll(hexLevel, 1, 1, 1, 2, 0, 0);
 					}
 					Collections.shuffle(hexLevel);
 	
-					// Nombre d'hexagones à créer
+					// Number of hexagons to create
 					int hexCount = isMiddleColumn ? 5 : 6;
 					for (int i = 0; i < hexCount; i++) {
 						int systemLevel = hexLevel.get(i);
@@ -1144,52 +1175,52 @@ public class Game implements Serializable{
 	public void displayMap() {
 		System.out.println("Map:");
 	
-		// Afficher les IDs des secteurs sur une seule ligne
+		// Display the sector IDs in a single line
 		for (Sector[] row : map) {
 			for (Sector sector : row) {
 				System.out.print("Sector ID: " + sector.getSectorID() + "   			");
 			}
-			System.out.println(); // Passe à la ligne suivante après les IDs des secteurs
+			System.out.println(); // Move to the next line after the sector IDs
 	
-			// Trouver le nombre maximum d'hexagones dans un secteur de la rangée
+			// Find the maximum number of hexagons in a sector in the row
 			int maxHexCount = 0;
 			for (Sector sector : row) {
 				maxHexCount = Math.max(maxHexCount, sector.getSection().size());
 			}
 	
-			// Afficher les hexagones ligne par ligne
+			// Display the hexagons row by row
 			for (int hexIndex = 0; hexIndex < maxHexCount; hexIndex++) {
 				for (Sector sector : row) {
 					if (hexIndex < sector.getSection().size()) {
 						Hex hex = sector.getSection().get(hexIndex);
-						// Affiche les informations de l'hexagone
+						// Display hexagon information
 						System.out.print("  Hex Level: " + hex.getSystemLevel() + ", Fleet: " + hex.getFleet());
 					} else {
-						// Si le secteur a moins d'hexagones que la ligne actuelle, espace vide
+						// If the sector has fewer hexagons than the current row, display empty space
 						System.out.print("                        ");
 					}
-					System.out.print("   "); // Espace entre secteurs
+					System.out.print("   "); // Space between sectors
 				}
-				System.out.println(); // Passe à la ligne suivante après une rangée d'hexagones
+				System.out.println(); // Move to the next line after a row of hexagons
 	
-				// Afficher les propriétaires des hexagones sur une ligne dédiée
+				// Display the owners of the hexagons in a dedicated line
 				for (Sector sector : row) {
 					if (hexIndex < sector.getSection().size()) {
 						Hex hex = sector.getSection().get(hexIndex);
 						if (hex.getOwner() != null) {
 							System.out.print("    Owner: " + hex.getOwner().getName() + "     ");
 						} else {
-							System.out.print("                         "); // Espacement pour alignement
+							System.out.print("                         "); // Spacing for alignment
 						}
 					} else {
-						System.out.print("                         "); // Espacement pour alignement
+						System.out.print("                         "); // Spacing for alignment
 					}
-					System.out.print("   "); // Espace entre secteurs
+					System.out.print("   "); // Space between sectors
 				}
-				System.out.println(); // Passe à la ligne suivante après une rangée de propriétaires
+				System.out.println(); // Move to the next line after a row of owners
 			}
 	
-			System.out.println(); // Ligne vide entre les groupes de secteurs
+			System.out.println(); // Empty line between sector groups
 		}
 	}
 	
