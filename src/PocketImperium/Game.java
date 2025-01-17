@@ -718,12 +718,12 @@ public class Game implements Serializable{
 	/**
 	* Finds and returns the neighboring hexes of a given hex within the same sector.
 	* 
-	* <p>This method retrieves all hexes in the sector where the provided hex is located.
-	* It identifies the index of the given hex and displays the neighboring hexes within the sector.</p>
+	* This method retrieves all hexes in the sector where the provided hex is located. It identifies 
+	* the index of the given hex and displays the neighboring hexes within the sector.
 	* 
-	* @param hex the {@code Hex} object for which neighboring hexes are to be found.
+	* @param hex The {@code Hex} object for which neighboring hexes are to be found.
 	*            This hex must belong to a sector on the game map.
-	* @return a list of {@code Hex} objects representing all hexes in the same sector as the given hex.
+	* @return A list of {@code Hex} objects representing all hexes in the same sector as the given hex.
 	* 
 	* @see Hex
 	* @see Sector
@@ -749,11 +749,12 @@ public class Game implements Serializable{
 	
 	/**
 	* Executes the "Explore" command for the given player.
-	* The player selects a sector and hex to move ships from, and then selects a destination sector and hex to explore.
-	* If the player is a bot, all selections are made randomly.
+	* 
+	* The player selects a sector and hex to move ships from, and then selects a destination sector and 
+	* hex to explore. If the player is a bot, all selections are made randomly.
 	*
-	* @param currentPlayer the player executing the command, which can be a human or a bot.
-	* @param shipNumber the number of ships to move for exploration.
+	* @param currentPlayer The player executing the command, which can be a human or a bot.
+	* @param shipNumber The number of ships to move for exploration.
 	*
 	* This method:
 	* <ul>
@@ -814,8 +815,8 @@ public class Game implements Serializable{
 	 * place a lower number of ships.
 	 * <p>
 	 * 
-	 * @param currentPlayer: The target Player who will use the Expand command of the game.
-	 * @param shipNumber: The number of ships the player wishes to add on a Hex.
+	 * @param currentPlayer The target Player who will use the Expand command of the game.
+	 * @param shipNumber The number of ships the player wishes to add on a Hex.
 	 */
 	public void executeExpand(Player currentPlayer, int shipNumber) {
 		Scanner scan1 = new Scanner(System.in);
@@ -832,8 +833,8 @@ public class Game implements Serializable{
 	* The player selects an opponent's sector and hex to attack, or a bot makes the selection randomly.
 	* The targeted hex is then attacked using the specified number of ships.
 	*
-	* @param currentPlayer the player executing the command, which can be a human or a bot.
-	* @param shipNumber the number of ships to use for the attack.
+	* @param currentPlayer The player executing the command, which can be a human or a bot.
+	* @param shipNumber The number of ships to use for the attack.
 	*
 	* This method:
 	* <ul>
