@@ -1097,7 +1097,10 @@ public class Game implements Serializable{
 		}
 	}
 	
-	
+	/**
+	 * Returns all the Sectors of the map as a list
+	 * @return List of the sectors in the map
+	 */
 	public List<Sector> getMap() {
         List<Sector> sectorList = new ArrayList<>();
         
@@ -1113,7 +1116,7 @@ public class Game implements Serializable{
 	
 	/**
 	 * Returns all the unoccupied sectors in the Map of the Game.
-	 * @return a set of all the free sector's ID
+	 * @return a set of integers representing all the free sector's ID
 	 */
 	public Set<Integer> availableSectors() {
 		Set<Integer> Sectors = new HashSet<Integer>();

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Scanner;
 
 public class BotPlayer extends Player implements Serializable {
     public enum Strategy {
@@ -175,6 +176,16 @@ public class BotPlayer extends Player implements Serializable {
         super.explore(fromSector.getSectorId(), fromHex.getSectorID(), toSector.getSectorId(), toHex.getSectorID(), fleetToMove, map);
         System.out.println("Bot successfully explored and moved " + fleetToMove + " ships.");
     }
+    
+    @Override
+    public int commandFleetNumber(String command, int maxNumberShips) {
+		int shipNumber = 4;
+		Random rand = new Random();
+		while(shipNumber > maxNumberShips) {
+			shipNumber = rand.nextInt(maxNumberShips);
+		}
+		return shipNumber;
+	}
 
 
 }

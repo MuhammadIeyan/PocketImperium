@@ -106,7 +106,13 @@ public class Player implements Serializable {
     	ownedSector.add(freeSector);
     }
 
-    // Actions
+    /**
+     * This method allows the player to plan his move set for the turn
+     * <p>
+     * The player will be asked to select their command for the 3 phases of a Turn 
+     * by entering an integer (1: Expand - 2: Explore - 3: Exterminate)
+     * <p>
+     */
     public void plan() {
         Scanner scanner = new Scanner(System.in);
         
@@ -138,6 +144,10 @@ public class Player implements Serializable {
         }
     }
 
+    /**
+     * 
+     * @param shipNumber
+     */
     public void expand(int shipNumber) {
     	// Display all the owned sectors
     	List<Integer> sectorID = new ArrayList<Integer>();
