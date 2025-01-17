@@ -159,8 +159,8 @@ public class Player implements Serializable {
     	// Display all the owned sectors
     	List<Integer> sectorID = new ArrayList<Integer>();
        for(int i = 0; i <  this.ownedSector.size(); i++) {
-    	   System.out.println(this.name + " owns the " + this.ownedSector.get(i).getSectorId() + " sector");
-    	   sectorID.add(this.ownedSector.get(i).getSectorId());
+    	   System.out.println(this.name + " owns the " + this.ownedSector.get(i).getSectorID() + " sector");
+    	   sectorID.add(this.ownedSector.get(i).getSectorID());
        }
        
        // Ask the user for the hex, he wants to put the ships on
@@ -265,7 +265,7 @@ public class Player implements Serializable {
      */
     private Sector findOwnedSectorById(int sectorId) {
         for (Sector sector : ownedSector) {
-            if (sector.getSectorId() == sectorId) {
+            if (sector.getSectorID() == sectorId) {
                 return sector;
             }
         }

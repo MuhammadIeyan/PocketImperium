@@ -99,9 +99,9 @@ public class BotPlayer extends Player implements Serializable {
         int hexIndex = selectedSector.getSection().indexOf(chosenHex);
 
         // Ajouter les vaisseaux au hexagone choisi
-        System.out.println(getName() + " (bot) is expanding in sector " + selectedSector.getSectorId() + " at hex " + hexIndex);
+        System.out.println(getName() + " (bot) is expanding in sector " + selectedSector.getSectorID() + " at hex " + hexIndex);
         selectedSector.expand(hexIndex, shipNumber);
-        System.out.println("Bot placed " + shipNumber + " ships on hex " + hexIndex + " in sector " + selectedSector.getSectorId());
+        System.out.println("Bot placed " + shipNumber + " ships on hex " + hexIndex + " in sector " + selectedSector.getSectorID());
     }
 
     @Override
@@ -112,7 +112,7 @@ public class BotPlayer extends Player implements Serializable {
         
         // Chercher le secteur d'origine dans ownedSector
         for (Sector sector : this.getOwnedSector()) {
-            if (sector.getSectorId() == fromSectorID) {
+            if (sector.getSectorID() == fromSectorID) {
                 fromSector = sector;
                 break;
             }
@@ -173,7 +173,7 @@ public class BotPlayer extends Player implements Serializable {
 
         // Lancer l'exploration
         System.out.println("Bot is exploring...");
-        super.explore(fromSector.getSectorId(), fromHex.getSectorID(), toSector.getSectorId(), toHex.getSectorID(), fleetToMove, map);
+        super.explore(fromSector.getSectorID(), fromHex.getSectorID(), toSector.getSectorID(), toHex.getSectorID(), fleetToMove, map);
         System.out.println("Bot successfully explored and moved " + fleetToMove + " ships.");
     }
     

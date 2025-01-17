@@ -770,8 +770,8 @@ public class Game implements Serializable{
 		// Liste des secteurs que le joueur possède
 		List<Integer> sectorID = new ArrayList<>();
 		for (int i = 0; i < currentPlayer.getOwnedSector().size(); i++) {
-			System.out.println("You own sector " + currentPlayer.getOwnedSector().get(i).getSectorId());
-			sectorID.add(currentPlayer.getOwnedSector().get(i).getSectorId());
+			System.out.println("You own sector " + currentPlayer.getOwnedSector().get(i).getSectorID());
+			sectorID.add(currentPlayer.getOwnedSector().get(i).getSectorID());
 		}
 	
 		// Demander à l'utilisateur de sélectionner un secteur valide
@@ -838,7 +838,7 @@ public class Game implements Serializable{
 		// Demander à l'utilisateur où déplacer les navires
 		System.out.println("Please select the sector you want to move to: ");
 		int sectorExplore = scan.nextInt();
-		while(sectorExplore != sector.getSectorId()) {
+		while(sectorExplore != sector.getSectorID()) {
 			sectorExplore = scan.nextInt();
 		}
 	
@@ -908,10 +908,10 @@ public class Game implements Serializable{
 			if(i != indexOfPlayer) {
 				List<Sector> opponentSectors = playerList.get(i).getOwnedSector();
 				for (int j = 0; j < opponentSectors.size(); j++) {
-					System.out.println("The sector " + opponentSectors.get(j).getSectorId() + " is owned by " + playerList.get(i).getName());
+					System.out.println("The sector " + opponentSectors.get(j).getSectorID() + " is owned by " + playerList.get(i).getName());
 					
 					playerSectors.add(opponentSectors.get(j));
-					playerSectorID.add(opponentSectors.get(j).getSectorId());
+					playerSectorID.add(opponentSectors.get(j).getSectorID());
 				}
 			}
 				
@@ -1051,7 +1051,7 @@ public class Game implements Serializable{
 		// Afficher les IDs des secteurs sur une seule ligne
 		for (Sector[] row : map) {
 			for (Sector sector : row) {
-				System.out.print("Sector ID: " + sector.getSectorId() + "   			");
+				System.out.print("Sector ID: " + sector.getSectorID() + "   			");
 			}
 			System.out.println(); // Passe à la ligne suivante après les IDs des secteurs
 	
