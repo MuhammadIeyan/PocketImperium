@@ -593,6 +593,22 @@ public class Game implements Serializable{
 		return cardRepeat;
 	}
 	
+
+
+	/**
+	 * Determines the turn order of players based on their chosen command cards (EXPAND, EXPLORE, EXTERMINATE) 
+	 * and the number of times each card was selected during a turn.
+	 * 
+	 * <p>The method creates a turn order list by iterating over the command card counts for each phase of the turn 
+	 * (three phases in total). Players who chose a specific command are added to the turn order based on the card 
+	 * type and its occurrence.</p>
+	 * 
+	 * @param expandRepeat an array containing the count of "EXPAND" commands chosen in each phase of the turn.
+	 * @param exploreRepeat an array containing the count of "EXPLORE" commands chosen in each phase of the turn.
+	 * @param exterminateRepeat an array containing the count of "EXTERMINATE" commands chosen in each phase of the turn.
+	 * @return a list of integers representing the turn order of players. Each integer corresponds to a player's index 
+	 *         in the {@code playerList}. The order is determined by the players' command card selections.
+	 */
 	public List<Integer> setTurnOrder(int[] expandRepeat, int[] exploreRepeat, int[] exterminateRepeat) {
 		List<Integer> playerTurnOrder = new ArrayList<Integer>();
 		// We need to make a local copy of the arrays to keep them intact
