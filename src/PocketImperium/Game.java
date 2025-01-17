@@ -892,6 +892,26 @@ public class Game implements Serializable{
 		
 	}
 	
+
+	/**
+	* Constructs the game map by initializing a 3x3 grid of {@code Sector} objects.
+	* 
+	* <p>This method creates a total of 9 sectors, each with a unique sector ID. 
+	* The center sector contains a single level-3 system, while other sectors are populated 
+	* with a specified number of hexes, each assigned a randomly shuffled system level 
+	* according to predefined rules. The map is stored as a 2D array of {@code Sector} objects.</p>
+	* 
+	* <p>Details of the sector layout:</p>
+	* <ul>
+	*   <li>The center sector (middle of the grid) contains a single hex with system level 3.</li>
+	*   <li>Sectors in the middle column of the grid contain 5 hexes with levels distributed as: 
+	*       1, 1, 2, 0, 0.</li>
+	*   <li>All other sectors contain 6 hexes with levels distributed as: 1, 1, 1, 2, 0, 0.</li>
+	* </ul>
+	* 
+	* @see Sector
+	* @see Hex
+	*/
 	public void buildMap() {
 		map = new Sector[3][3]; // Makes the 9 Sector that will be used for the game
 		
