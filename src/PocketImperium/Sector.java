@@ -3,17 +3,19 @@ package PocketImperium;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * This class represents a sector in the map of Pocket Imperium. Section is represented
+ * threw its specific sector ID, the hexes that compose it, as well as the Player who 
+ * owns it (if there is one).
+ */
 public class Sector implements Serializable {
 	private int sectorID;
 	private List<Hex> section;
 	private Player owner;
 	
 	/**
-	 * This class represents a sector in the map of Pocket Imperium
-	 * <p>
-	 * Section is represented threw its specific sector ID, the hexes that compose it, 
-	 * as well as the Player who owns it (if there is one).
-	 * <p>
+	 * Builds a Sector object with the sector ID and list of hex that it contains.
+	 * 
 	 * @param sectorID An integer representing the Sectors ID
 	 * @param section A list of hexes to represent the hexes that it composes
 	 */
@@ -24,16 +26,16 @@ public class Sector implements Serializable {
 	}
 	
 	/**
-	 * Returns the Sectors' ID
-	 * @return an integer representing the sectors' ID
+	 * Gets the Sectors' ID
+	 * @return An integer representing the sectors' ID
 	 */
 	public int getSectorID() {
 		return this.sectorID;
 	}
 	
 	/**
-	 * Returns all the hexes that compose the Sector
-	 * @return a list of hex that compose the Sector
+	 * Gets all the hexes that compose the Sector.
+	 * @return A list of hex that compose the Sector
 	 */
 	public List<Hex> getSection() {
 		return this.section;
@@ -41,8 +43,9 @@ public class Sector implements Serializable {
 	
 	/**
 	 * Returns a specific Hexes system level as stated in the Game (level 1, 2, and 3)
-	 * @param hexesID the specific hexes ID to refer to it
-	 * @return an integer that represents the system level
+	 * 
+	 * @param hexesID The specific hexes ID to refer to it
+	 * @return An integer that represents the system level
 	 */
 	public int getSystemLevel(int hexesID) {
 		return this.section.get(hexesID).getSystemLevel();
@@ -61,17 +64,18 @@ public class Sector implements Serializable {
 	}
 	
 	/**
-	 * Allows the game to inform the Sector that a Player is expanding here
-	 * @param systemID: the target Hex that the Player has selected
-	 * @param fleet: the number of ships the Player has decided to use
+	 * Allows the game to inform the Sector that a Player is expanding here.
+	 * 
+	 * @param systemID The target Hex that the Player has selected.
+	 * @param fleet The number of ships the Player has decided to use.
 	 */
 	public void expand(int systemID, int fleet) {
 		this.section.get(systemID).setFleet(fleet);
 	}
 	
 	/**
-	 * Returns whether or not the Sector has an owner or not
-	 * @return a boolean representing if the sector has an owner
+	 * Checks whether or not the Sector has an owner or not.
+	 * @return A boolean representing if the sector has an owner.
 	 */
 	public boolean hasOwner() {
 		if(this.owner == null) {
@@ -82,7 +86,7 @@ public class Sector implements Serializable {
 	}
 	
 	/**
-	 * Displays to the screen that this sector is free, as well as its sector ID
+	 * Displays to the screen that this sector is free, as well as its sector ID.
 	 */
 	public void displayFreeSector() {
 		if(!hasOwner()) {
@@ -92,7 +96,7 @@ public class Sector implements Serializable {
 	
 	/**
 	 * Returns the sectors' ID if it's free
-	 * @return
+	 * @return The sectors ID if it's free
 	 */
 	public int getFreeSectorID() {
 		if(!hasOwner()) {
@@ -103,7 +107,7 @@ public class Sector implements Serializable {
 	
 	/**
 	 * Calculates the total number of points a Player will earn from this sector
-	 * @return an integer representing the sector score of the PLayer
+	 * @return An integer representing the sector score of the PLayer
 	 */
 	public int sectorPoints() {
 		int points = 0;
@@ -123,7 +127,7 @@ public class Sector implements Serializable {
 
 	/**
 	 * Returns the owners' name
-	 * @return a string representing the player owners' name
+	 * @return A string representing the player owners' name
 	 */
 	public String getOwnerName() {
 		if (this.owner != null) {
@@ -134,7 +138,7 @@ public class Sector implements Serializable {
 	
 	/**
 	 * Returns a Hex based on the specified hex ID
-	 * @param hexesID: integer representing the hex ID in the sector
+	 * @param hexesID Integer representing the hex ID in the sector
 	 */
     public Hex getHex(int hexesID) {
 		if (hexesID < 0 || hexesID >= section.size()) {
@@ -145,7 +149,7 @@ public class Sector implements Serializable {
 
     /**
      * Returns the owner of the sector
-     * @return a player who is the owner of this sector
+     * @return A player who is the owner of this sector
      */
 	public Player getOwner() {
         return this.owner;
@@ -159,9 +163,9 @@ public class Sector implements Serializable {
     }
 	
     /**
-     * Returns any random hex with a specified level from the Sector
-     * @param level an integer representing the system level we want
-     * @return a hex 
+     * Returns any random hex with a specified level from the Sector.
+     * @param level An integer representing the system level we want.
+     * @return A random random with the specified level.
      */
 	public int getRandomHexWithLevel(int level) {
 		List<Hex> availableHexes = new ArrayList<>();
