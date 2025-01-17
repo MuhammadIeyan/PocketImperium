@@ -651,6 +651,25 @@ public class Game implements Serializable{
 		return playerTurnOrder;
 	}
 	
+
+	/**
+	 * Generates the execution order of commands (EXPAND, EXPLORE, EXTERMINATE) for a turn, 
+	 * based on the number of times each command was selected in each phase of the turn.
+	 * 
+	 * <p>The method processes the counts of command card selections and returns a list 
+	 * where each element represents a specific command. The commands are encoded as follows:</p>
+	 * <ul>
+	 *   <li>{@code 0} - Represents the "EXPAND" command.</li>
+	 *   <li>{@code 1} - Represents the "EXPLORE" command.</li>
+	 *   <li>{@code 2} - Represents the "EXTERMINATE" command.</li>
+	 * </ul>
+	 * 
+	 * @param expandRepeat an array containing the count of "EXPAND" commands chosen in each phase of the turn.
+	 * @param exploreRepeat an array containing the count of "EXPLORE" commands chosen in each phase of the turn.
+	 * @param exterminateRepeat an array containing the count of "EXTERMINATE" commands chosen in each phase of the turn.
+	 * @return a list of integers representing the execution order of commands for the turn. Each integer corresponds 
+	 *         to a command type, encoded as described above.
+	 */
 	public List<Integer> setCommandOrder(int[] expandRepeat, int[] exploreRepeat, int[] exterminateRepeat) {
 		List<Integer> commandOrder = new ArrayList<Integer>();
 		// We need to make a local copy of the arrays to keep them intact
