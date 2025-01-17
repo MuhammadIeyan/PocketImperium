@@ -951,7 +951,6 @@ public class Game implements Serializable{
 	}
 	
 	public void moveFrom(Player currentPlayer, int shipNumber) {
-		System.out.println(currentPlayer.getName() + " is about to use the Explore command...");
 		
 		Random random = new Random();
 	

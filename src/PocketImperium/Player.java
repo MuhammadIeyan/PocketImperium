@@ -108,10 +108,8 @@ public class Player implements Serializable {
 
     /**
      * This method allows the player to plan his move set for the turn
-     * <p>
-     * The player will be asked to select their command for the 3 phases of a Turn 
-     * by entering an integer (1: Expand - 2: Explore - 3: Exterminate)
-     * <p>
+     * <p> The player will be asked to select their command for the 3 phases of a Turn 
+     * by entering an integer (1: Expand - 2: Explore - 3: Exterminate) <p>
      */
     public void plan() {
         Scanner scanner = new Scanner(System.in);
