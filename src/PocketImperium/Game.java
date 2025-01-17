@@ -19,31 +19,31 @@ public class Game implements Serializable{
 	}
 	
 	/**
-	 * Starts the Pocket Imperium game, allowing the user to set up and play.
-	 * 
-	 * <p>This method initializes the game by offering the user a choice between starting
-	 * a new game or loading a saved game. If a new game is chosen, it prompts the user
-	 * to configure the players (either human or bots), their names, and the strategies
-	 * for bot players. It then builds the game map, displays it, and starts the first turn.
-	 * 
-	 * <p>The game loop runs for a maximum of 10 turns or until the game is marked as finished.
-	 * 
-	 * <p>Steps:
-	 * <ol>
-	 *   <li>Display a menu for the user to choose between "New Game" and "Load Game".</li>
-	 *   <li>If "Load Game" is chosen, load the game state from a file and resume gameplay.</li>
-	 *   <li>If "New Game" is chosen, prompt the user to specify the number of players (maximum 3).</li>
-	 *   <li>For each player, ask if it is a bot or a human:
-	 *       <ul>
-	 *         <li>For bots, request the name and strategy (AGGRESSIVE, DEFENSIVE, or RANDOM).</li>
-	 *         <li>For humans, request the player's name.</li>
-	 *       </ul>
-	 *   </li>
-	 *   <li>Build the game map, initialize the game state, and start the first turn.</li>
-	 *   <li>Run the game for up to 10 turns or until the game is marked as finished.</li>
-	 * </ol>
-	 * 
-	 */
+	* Starts the Pocket Imperium game, allowing the user to set up and play.
+	* 
+	* <p>This method initializes the game by offering the user a choice between starting
+	* a new game or loading a saved game. If a new game is chosen, it prompts the user
+	* to configure the players (either human or bots), their names, and the strategies
+	* for bot players. It then builds the game map, displays it, and starts the first turn.
+	* 
+	* <p>The game loop runs for a maximum of 10 turns or until the game is marked as finished.
+	* 
+	* <p>Steps:
+	* <ol>
+	*   <li>Display a menu for the user to choose between "New Game" and "Load Game".</li>
+	*   <li>If "Load Game" is chosen, load the game state from a file and resume gameplay.</li>
+	*   <li>If "New Game" is chosen, prompt the user to specify the number of players (maximum 3).</li>
+	*   <li>For each player, ask if it is a bot or a human:
+	*       <ul>
+	*         <li>For bots, request the name and strategy (AGGRESSIVE, DEFENSIVE, or RANDOM).</li>
+	*         <li>For humans, request the player's name.</li>
+	*       </ul>
+	*   </li>
+	*   <li>Build the game map, initialize the game state, and start the first turn.</li>
+	*   <li>Run the game for up to 10 turns or until the game is marked as finished.</li>
+	* </ol>
+	* 
+	*/
 	public void startGame() throws InterruptedException {
 
 		System.out.println("Welcome to Pocket Imperium");
@@ -154,39 +154,39 @@ public class Game implements Serializable{
 
 
 	/**
-	 * Sets up the initial game state by allowing players (human or bot) to place their ships
-	 * in two phases: clockwise and counterclockwise. Each player chooses a sector and a hex
-	 * with a level 1 system to place their ships.
-	 *
-	 * <p><b>Process:</b></p>
-	 * <ul>
-	 *   <li>Iterates through the player list in clockwise order and then counterclockwise.</li>
-	 *   <li>For each player:
-	 *     <ul>
-	 *       <li>Displays all free sectors on the map.</li>
-	 *       <li>If the player is a bot:
-	 *         <ul>
-	 *           <li>Selects a random free sector and hex with level 1 system.</li>
-	 *         </ul>
-	 *       </li>
-	 *       <li>If the player is human:
-	 *         <ul>
-	 *           <li>Prompts the player to select a valid sector and hex with level 1 system.</li>
-	 *         </ul>
-	 *       </li>
-	 *       <li>Sets the selected sector and hex as owned by the player.</li>
-	 *       <li>Places 2 ships in the selected hex and updates the player's fleet and remaining ships.</li>
-	 *     </ul>
-	 *   </li>
-	 * </ul>
-	 * 
-	 * <p><b>Key Operations:</b></p>
-	 * <ul>
-	 *   <li>Ensures the selected sector and hex are valid and unoccupied.</li>
-	 *   <li>Updates the map and player's state to reflect ownership and fleet allocation.</li>
-	 *   <li>Handles bot and human players differently for sector and hex selection.</li>
-	 * </ul>
-	 */
+	* Sets up the initial game state by allowing players (human or bot) to place their ships
+	* in two phases: clockwise and counterclockwise. Each player chooses a sector and a hex
+	* with a level 1 system to place their ships.
+	*
+	* <p><b>Process:</b></p>
+	* <ul>
+	*   <li>Iterates through the player list in clockwise order and then counterclockwise.</li>
+	*   <li>For each player:
+	*     <ul>
+	*       <li>Displays all free sectors on the map.</li>
+	*       <li>If the player is a bot:
+	*         <ul>
+	*           <li>Selects a random free sector and hex with level 1 system.</li>
+	*         </ul>
+	*       </li>
+	*       <li>If the player is human:
+	*         <ul>
+	*           <li>Prompts the player to select a valid sector and hex with level 1 system.</li>
+	*         </ul>
+	*       </li>
+	*       <li>Sets the selected sector and hex as owned by the player.</li>
+	*       <li>Places 2 ships in the selected hex and updates the player's fleet and remaining ships.</li>
+	*     </ul>
+	*   </li>
+	* </ul>
+	* 
+	* <p><b>Key Operations:</b></p>
+	* <ul>
+	*   <li>Ensures the selected sector and hex are valid and unoccupied.</li>
+	*   <li>Updates the map and player's state to reflect ownership and fleet allocation.</li>
+	*   <li>Handles bot and human players differently for sector and hex selection.</li>
+	* </ul>
+	*/
 	public void setupGame() throws InterruptedException {
 		Player currentPlayer;
 	
@@ -514,7 +514,7 @@ public class Game implements Serializable{
 	* </ul>
 	* 
 	* <p>A message displaying the result is shown to the player.</p>
-	 */
+	*/
 	public int commandPower(int numberOfRep) {
 		if (numberOfRep == 1) {
 			System.out.println("You can use 3 ships");
@@ -530,27 +530,27 @@ public class Game implements Serializable{
 	
 
 	/**
-	 * Calculates the number of occurrences of each command card (EXPAND, EXPLORE, EXTERMINATE) 
-	 * selected by players during a turn.
-	 * 
-	 * <p>This method iterates over the players and counts how many times each command card is chosen 
-	 * in each phase of the turn (three phases in total). The results are stored as follows:</p>
-	 * <ul>
-	 *   <li>An array for the "EXPAND" command counts per phase.</li>
-	 *   <li>An array for the "EXPLORE" command counts per phase.</li>
-	 *   <li>An array for the "EXTERMINATE" command counts per phase.</li>
-	 * </ul>
-	 * 
-	 * <p>Each array contains three integers, where each index corresponds to a phase of the turn. 
-	 * These arrays are then added to a list that represents the total counts for all commands.</p>
-	 * 
-	 * @return a list of three integer arrays, each representing the count of a specific command card:
-	 *         <ul>
-	 *           <li>The first array contains the counts for the "EXPAND" command for each phase.</li>
-	 *           <li>The second array contains the counts for the "EXPLORE" command for each phase.</li>
-	 *           <li>The third array contains the counts for the "EXTERMINATE" command for each phase.</li>
-	 *         </ul>
-	 */
+	* Calculates the number of occurrences of each command card (EXPAND, EXPLORE, EXTERMINATE) 
+	* selected by players during a turn.
+	* 
+	* <p>This method iterates over the players and counts how many times each command card is chosen 
+	* in each phase of the turn (three phases in total). The results are stored as follows:</p>
+	* <ul>
+	*   <li>An array for the "EXPAND" command counts per phase.</li>
+	*   <li>An array for the "EXPLORE" command counts per phase.</li>
+	*   <li>An array for the "EXTERMINATE" command counts per phase.</li>
+	* </ul>
+	* 
+	* <p>Each array contains three integers, where each index corresponds to a phase of the turn. 
+	* These arrays are then added to a list that represents the total counts for all commands.</p>
+	* 
+	* @return a list of three integer arrays, each representing the count of a specific command card:
+	*         <ul>
+	*           <li>The first array contains the counts for the "EXPAND" command for each phase.</li>
+	*           <li>The second array contains the counts for the "EXPLORE" command for each phase.</li>
+	*           <li>The third array contains the counts for the "EXTERMINATE" command for each phase.</li>
+	*         </ul>
+	*/
 	public List<int[]> commandRepeats() {
 		// Check how many times they are being repeated in a turn
 		int[] expandRepeat = new int[3];
@@ -596,19 +596,19 @@ public class Game implements Serializable{
 
 
 	/**
-	 * Determines the turn order of players based on their chosen command cards (EXPAND, EXPLORE, EXTERMINATE) 
-	 * and the number of times each card was selected during a turn.
-	 * 
-	 * <p>The method creates a turn order list by iterating over the command card counts for each phase of the turn 
-	 * (three phases in total). Players who chose a specific command are added to the turn order based on the card 
-	 * type and its occurrence.</p>
-	 * 
-	 * @param expandRepeat an array containing the count of "EXPAND" commands chosen in each phase of the turn.
-	 * @param exploreRepeat an array containing the count of "EXPLORE" commands chosen in each phase of the turn.
-	 * @param exterminateRepeat an array containing the count of "EXTERMINATE" commands chosen in each phase of the turn.
-	 * @return a list of integers representing the turn order of players. Each integer corresponds to a player's index 
-	 *         in the {@code playerList}. The order is determined by the players' command card selections.
-	 */
+	* Determines the turn order of players based on their chosen command cards (EXPAND, EXPLORE, EXTERMINATE) 
+	* and the number of times each card was selected during a turn.
+	* 
+	* <p>The method creates a turn order list by iterating over the command card counts for each phase of the turn 
+	* (three phases in total). Players who chose a specific command are added to the turn order based on the card 
+	* type and its occurrence.</p>
+	* 
+	* @param expandRepeat an array containing the count of "EXPAND" commands chosen in each phase of the turn.
+	* @param exploreRepeat an array containing the count of "EXPLORE" commands chosen in each phase of the turn.
+	* @param exterminateRepeat an array containing the count of "EXTERMINATE" commands chosen in each phase of the turn.
+	* @return a list of integers representing the turn order of players. Each integer corresponds to a player's index 
+	*         in the {@code playerList}. The order is determined by the players' command card selections.
+	*/
 	public List<Integer> setTurnOrder(int[] expandRepeat, int[] exploreRepeat, int[] exterminateRepeat) {
 		List<Integer> playerTurnOrder = new ArrayList<Integer>();
 		// We need to make a local copy of the arrays to keep them intact
@@ -653,23 +653,23 @@ public class Game implements Serializable{
 	
 
 	/**
-	 * Generates the execution order of commands (EXPAND, EXPLORE, EXTERMINATE) for a turn, 
-	 * based on the number of times each command was selected in each phase of the turn.
-	 * 
-	 * <p>The method processes the counts of command card selections and returns a list 
-	 * where each element represents a specific command. The commands are encoded as follows:</p>
-	 * <ul>
-	 *   <li>{@code 0} - Represents the "EXPAND" command.</li>
-	 *   <li>{@code 1} - Represents the "EXPLORE" command.</li>
-	 *   <li>{@code 2} - Represents the "EXTERMINATE" command.</li>
-	 * </ul>
-	 * 
-	 * @param expandRepeat an array containing the count of "EXPAND" commands chosen in each phase of the turn.
-	 * @param exploreRepeat an array containing the count of "EXPLORE" commands chosen in each phase of the turn.
-	 * @param exterminateRepeat an array containing the count of "EXTERMINATE" commands chosen in each phase of the turn.
-	 * @return a list of integers representing the execution order of commands for the turn. Each integer corresponds 
-	 *         to a command type, encoded as described above.
-	 */
+	* Generates the execution order of commands (EXPAND, EXPLORE, EXTERMINATE) for a turn, 
+	* based on the number of times each command was selected in each phase of the turn.
+	* 
+	* <p>The method processes the counts of command card selections and returns a list 
+	* where each element represents a specific command. The commands are encoded as follows:</p>
+	* <ul>
+	*   <li>{@code 0} - Represents the "EXPAND" command.</li>
+	*   <li>{@code 1} - Represents the "EXPLORE" command.</li>
+	*   <li>{@code 2} - Represents the "EXTERMINATE" command.</li>
+	* </ul>
+	* 
+	* @param expandRepeat an array containing the count of "EXPAND" commands chosen in each phase of the turn.
+	* @param exploreRepeat an array containing the count of "EXPLORE" commands chosen in each phase of the turn.
+	* @param exterminateRepeat an array containing the count of "EXTERMINATE" commands chosen in each phase of the turn.
+	* @return a list of integers representing the execution order of commands for the turn. Each integer corresponds 
+	*         to a command type, encoded as described above.
+	*/
 	public List<Integer> setCommandOrder(int[] expandRepeat, int[] exploreRepeat, int[] exterminateRepeat) {
 		List<Integer> commandOrder = new ArrayList<Integer>();
 		// We need to make a local copy of the arrays to keep them intact
@@ -698,6 +698,21 @@ public class Game implements Serializable{
 		return commandOrder;
 	}
 	
+
+	/**
+	* Finds and returns the neighboring hexes of a given hex within the same sector.
+	* 
+	* <p>This method retrieves all hexes in the sector where the provided hex is located.
+	* It identifies the index of the given hex and displays the neighboring hexes within the sector.</p>
+	* 
+	* @param hex the {@code Hex} object for which neighboring hexes are to be found.
+	*            This hex must belong to a sector on the game map.
+	* @return a list of {@code Hex} objects representing all hexes in the same sector as the given hex.
+	* 
+	* @see Hex
+	* @see Sector
+	* @see Map
+	*/
 	public List<Hex> findNeighbours(Hex hex) {
 
         // Get the sector ID as well as the sector of the hex
