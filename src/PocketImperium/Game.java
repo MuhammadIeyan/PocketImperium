@@ -791,10 +791,14 @@ public class Game implements Serializable{
 		if (currentPlayer instanceof BotPlayer) {
 			// Choisir un secteur aléatoire pour le bot
 			int selectedSector = sectorIDs.get(random.nextInt(sectorIDs.size()));
-			sector = currentPlayer.getOwnedSector().stream()
-					.filter(s -> s.getSectorID() == selectedSector)
-					.findFirst()
-					.orElse(null);
+			// Parcourir les secteurs pour trouver celui avec l'ID correspondant
+			sector = null;
+			for (Sector s : currentPlayer.getOwnedSector()) {
+				if (s.getSectorID() == selectedSector) {
+					sector = s;
+					break; // Arrêter la boucle dès que le secteur est trouvé
+				}
+			}
 			System.out.println("Bot selected sector " + selectedSector);
 		} else {
 			// Demander à l'utilisateur de choisir un secteur
@@ -805,11 +809,17 @@ public class Game implements Serializable{
 				selectedSector = scan.nextInt();
 			} while (!sectorIDs.contains(selectedSector));
 			
-			final int userSelectedSector = selectedSector; // Rend la variable effectivement finale
-			sector = currentPlayer.getOwnedSector().stream()
-					.filter(s -> s.getSectorID() == userSelectedSector)
-					.findFirst()
-					.orElse(null);
+			// Rendre la variable sélectionnée finale
+			final int userSelectedSector = selectedSector;
+
+			// Trouver le secteur correspondant
+			sector = null;
+			for (Sector s : currentPlayer.getOwnedSector()) {
+				if (s.getSectorID() == userSelectedSector) {
+					sector = s;
+					break; // Arrêter la recherche dès que le secteur est trouvé
+				}
+			}
 		}
 	
 		if (sector == null) {
