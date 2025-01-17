@@ -149,6 +149,44 @@ public class Game implements Serializable{
 		
 	}
 	
+
+
+
+
+	/**
+	 * Sets up the initial game state by allowing players (human or bot) to place their ships
+	 * in two phases: clockwise and counterclockwise. Each player chooses a sector and a hex
+	 * with a level 1 system to place their ships.
+	 *
+	 * <p><b>Process:</b></p>
+	 * <ul>
+	 *   <li>Iterates through the player list in clockwise order and then counterclockwise.</li>
+	 *   <li>For each player:
+	 *     <ul>
+	 *       <li>Displays all free sectors on the map.</li>
+	 *       <li>If the player is a bot:
+	 *         <ul>
+	 *           <li>Selects a random free sector and hex with level 1 system.</li>
+	 *         </ul>
+	 *       </li>
+	 *       <li>If the player is human:
+	 *         <ul>
+	 *           <li>Prompts the player to select a valid sector and hex with level 1 system.</li>
+	 *         </ul>
+	 *       </li>
+	 *       <li>Sets the selected sector and hex as owned by the player.</li>
+	 *       <li>Places 2 ships in the selected hex and updates the player's fleet and remaining ships.</li>
+	 *     </ul>
+	 *   </li>
+	 * </ul>
+	 * 
+	 * <p><b>Key Operations:</b></p>
+	 * <ul>
+	 *   <li>Ensures the selected sector and hex are valid and unoccupied.</li>
+	 *   <li>Updates the map and player's state to reflect ownership and fleet allocation.</li>
+	 *   <li>Handles bot and human players differently for sector and hex selection.</li>
+	 * </ul>
+	 */
 	public void setupGame() throws InterruptedException {
 		Player currentPlayer;
 	
