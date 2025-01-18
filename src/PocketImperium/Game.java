@@ -1249,7 +1249,6 @@ public class Game implements Serializable{
 		Set<Integer> Sectors = new HashSet<Integer>();
 		for (int row = 0; row < map.length; row++) {
 			for (int col = 0; col < map[row].length; col++) {
-				//map[row][col].displayFreeSector();
 				int sectorID = map[row][col].getFreeSectorID();
 				Sectors.add(sectorID);
 			}
